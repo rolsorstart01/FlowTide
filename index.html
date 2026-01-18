@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forge | Join the Waitlist</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="container">
+            <a href="#" class="logo">Forge</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Built to Build Faster.</h1>
+                <p>Streamline every workflow and ship products faster.</p>
+                <a href="#" id="open-waitlist" class="btn">Join the Waitlist</a>
+            </div>
+        </section>
+    </main>
+
+    <div id="popup-overlay" class="popup-overlay">
+        <div class="popup-content" id="modal-box">
+            <button id="close-popup" class="close-btn">&times;</button>
+
+            <div id="form-container">
+                <h2>Get Early Access</h2>
+                <p>Join 1,000+ builders getting early access to Forge.</p>
+                <form id="waitlist-form">
+                    <input type="email" id="email-input" placeholder="Enter your email" required>
+                    <button type="submit" id="submit-btn" class="btn btn-full">Notify Me</button>
+                </form>
+            </div>
+
+            <div id="success-message" style="display: none;">
+                <div class="success-icon">✓</div>
+                <h2>You're on the list!</h2>
+                <p>We'll reach out as soon as a spot opens up.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Forge. Built for the next generation.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="js/script.js"></script>
+</body>
+
+</html>
