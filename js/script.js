@@ -2,17 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
-
-// Your Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyA72C67ZUUcQYdXlzmojvglxkuV8PxUcag",
-    authDomain: "forgecodefirebase.firebaseapp.com",
-    projectId: "forgecodefirebase",
-    storageBucket: "forgecodefirebase.firebasestorage.app",
-    messagingSenderId: "343783791551",
-    appId: "1:343783791551:web:c9887aa925dd8eec1e9f0a",
-    measurementId: "G-JBKJ2YFLHQ"
-};
+import { firebaseConfig } from "../js/config.js";
 
 // Initialize Firebase services
 const app = initializeApp(firebaseConfig);
