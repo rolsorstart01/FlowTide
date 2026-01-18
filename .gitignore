@@ -1,6 +1,3 @@
-# Ignore the Firebase config file
-js/config.js
-
 # Ignore OS files
 .DS_Store
 Thumbs.db
