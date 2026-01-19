@@ -1,5 +1,6 @@
 {
     "cleanUrls": true,
+    "outputDirectory": ".",
     "rewrites": [
         {
             "source": "/api/(.*)",
@@ -20,6 +21,16 @@
         {
             "source": "/contact",
             "destination": "/pages/contact.html"
+        }
+    ],
+    "routes": [
+        {
+            "handle": "filesystem"
+        },
+        {
+            "src": "/.*",
+            "status": 404,
+            "dest": "/pages/home.html"
         }
     ]
 }

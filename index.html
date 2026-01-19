@@ -1,4 +1,3 @@
-<!--index.html-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,23 +7,133 @@
     <title>Flowtide | Join the Waitlist</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/legal.css">
+    <style>
+        :root {
+            --bg-primary: #000000;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            display: none;
+            /* Controlled by JS */
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .popup-content {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
+            position: relative;
+        }
+
+        #modal-box h2 {
+            color: #fff;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        #modal-box p {
+            color: var(--text-secondary);
+        }
+
+        #email-input {
+            width: 100%;
+            padding: 16px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 12px;
+            color: #fff;
+            margin-top: 25px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .btn-full {
+            width: 100%;
+            background: #ffffff !important;
+            color: #000000 !important;
+            margin-top: 15px;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-full:hover {
+            background: #cccccc !important;
+            transform: translateY(-2px);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .success-icon {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #fff;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            font-size: 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            font-size: 2rem;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 
 <body>
-
     <header class="navbar">
-        <div class="container">
-            <a href="#" class="logo"><img src="Images/Logo/logo.png" alt="FlowTide"></a>
+        <div class="container" style="text-align: center; padding: 20px;">
+            <a href="#" class="logo"><img src="Images/Logo/logo.png" alt="FlowTide" style="height: 50px;"></a>
         </div>
     </header>
 
     <main>
-        <section class="hero">
+        <section class="hero" style="text-align: center; padding: 100px 20px;">
             <div class="container">
-                <h1>Built to Build Faster.</h1>
-                <p>Flowtide is the command center for high-performance teams. We’ve eliminated the friction of traditional project management to help you orchestrate complex workflows and ship at the speed of thought.
+                <h1 style="color: white;">Built to Build Faster.</h1>
+                <p style="color: #888; margin-bottom: 30px;">Flowtide is the command center for high-performance teams.
                 </p>
-                <a href="#" id="open-waitlist" class="btn">Join the Waitlist</a>
+                <a href="#" id="open-waitlist" class="btn-full"
+                    style="display: inline-block; width: auto; padding: 15px 40px;">Join the Waitlist</a>
             </div>
         </section>
     </main>
@@ -32,16 +141,14 @@
     <div id="popup-overlay" class="popup-overlay">
         <div class="popup-content" id="modal-box">
             <button id="close-popup" class="close-btn">&times;</button>
-
             <div id="form-container">
                 <h2>Get Early Access</h2>
-                <p>Join 1,000+ builders getting early access to Flowtide.</p>
+                <p>Join 1,000+ builders getting early access.</p>
                 <form id="waitlist-form">
                     <input type="email" id="email-input" placeholder="Enter your email" required>
-                    <button type="submit" id="submit-btn" class="btn btn-full">Notify Me</button>
+                    <button type="submit" id="submit-btn" class="btn-full">Notify Me</button>
                 </form>
             </div>
-
             <div id="success-message" style="display: none;">
                 <div class="success-icon">✓</div>
                 <h2>You're on the list!</h2>
@@ -51,12 +158,73 @@
     </div>
 
     <footer class="footer">
-        <div class="container">
-            <p>&copy; 2026 FlowTideIndia. Built for the next generation.</p>
+        <div class="container footer-content">
+            <p>&copy; 2026 FlowTide. All rights reserved.</p>
+            <nav class="footer-links">
+                <a href="pages/legal/privacy.html" target="_blank">Privacy Policy, </a>
+                <a href="pages/legal/terms.html" target="_blank">Terms of Service, </a>
+                <a href="pages/legal/cookies.html" target="_blank">Cookie Policy, </a>
+                <a href="pages/contact.html" target="_blank">Contact Us</a>
+            </nav>
         </div>
     </footer>
 
-    <script type="module" src="js/script.js"></script>
+    <script type="module">
+        import { db } from "./js/script.js";
+        import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const openBtn = document.getElementById('open-waitlist');
+            const closeBtn = document.getElementById('close-popup');
+            const overlay = document.getElementById('popup-overlay');
+            const waitlistForm = document.getElementById('waitlist-form');
+
+            // OPEN POPUP
+            if (openBtn) {
+                openBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    overlay.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+
+            // CLOSE POPUP
+            const closePopup = () => {
+                overlay.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            };
+
+            if (closeBtn) closeBtn.addEventListener('click', closePopup);
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) closePopup(); });
+
+            // HANDLE FIREBASE
+            if (waitlistForm) {
+                waitlistForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('email-input').value;
+                    const submitBtn = document.getElementById('submit-btn');
+
+                    submitBtn.innerText = "Joining...";
+                    submitBtn.disabled = true;
+
+                    try {
+                        await addDoc(collection(db, "waitlist"), {
+                            email: email,
+                            timestamp: serverTimestamp()
+                        });
+                        document.getElementById('form-container').style.display = 'none';
+                        document.getElementById('success-message').style.display = 'block';
+                    } catch (error) {
+                        console.error("Error:", error);
+                        alert("Something went wrong. Please try again.");
+                        submitBtn.innerText = "Notify Me";
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

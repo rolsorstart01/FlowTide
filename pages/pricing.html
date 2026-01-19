@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pricing | FlowTide</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/legal.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
 </head>
@@ -15,80 +16,107 @@
     <header class="navbar">
         <div class="container">
             <a href="/" class="logo"><img src="../Images/Logo/logo.png" alt="FlowTide Logo"></a>
-
             <input type="checkbox" id="menu-btn" class="menu-btn">
-            <label for="menu-btn" class="menu-icon">
-                <span class="navicon"></span>
-            </label>
-
+            <label for="menu-btn" class="menu-icon"><span class="navicon"></span></label>
             <nav>
                 <ul>
-                    <li><a href="/home">Home</a></li>
-                    <li><a href="/main">Architect</a></li>
-                    <li><a href="/pricing">Pricing</a></li>
-                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../main.html">Architect</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="contact.html">Contact</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <main class="container">
-        <section class="hero" style="padding: 35px 0 10px 0;">
-            <h1>Simple, Scalable Pricing.</h1>
-            <p>Choose the plan that fits your wants and needs.</p>
+        <section class="hero" style="padding: 60px 0 20px 0; text-align: center;">
+            <h1 style="color: white; font-size: 3rem;">Simple, Scalable Pricing.</h1>
+            <p style="color: white; opacity: 0.8;">Choose the plan that fits your wants and needs.</p>
         </section>
 
         <section class="pricing-section">
             <div class="pricing-grid">
                 <div class="pricing-card">
                     <h3>Starter</h3>
-                    <div class="price">₹399<span>/mo</span></div>
-                    <p style="color: var(--text-secondary);">For individuals exploring AI workflows.</p>
+                    <div class="price">₹<span id="s-price">0</span><span>/mo</span></div>
+                    <div class="slider-container">
+                        <label>Storage: <span id="s-storage-val">5</span>GB</label>
+                        <input type="range" min="5" max="50" value="5" class="slider" id="s-storage">
+
+                        <label>API Tokens: <span id="s-api-val">1</span>M</label>
+                        <input type="range" min="1" max="10" value="1" class="slider" id="s-api">
+                    </div>
                     <ul class="features-list">
-                        <li>3 Active Projects</li>
-                        <li>Standard AI Execution</li>
-                        <li>Up to 8 Members</li>
-                        <li>1GB Cloud Storage</li>
+                        <li>Standard AI Integration</li>
+                        <li>Secure Cloud Storage</li>
+                        <li>Up to 8 Members per team</li>
                     </ul>
-                    <button class="btn btn-full">Get Started</button>
+                    <button class="btn btn-outline">Get Started</button>
                 </div>
 
                 <div class="pricing-card popular">
-                    <span class="badge">MOST POPULAR</span>
-                    <h3>Pro</h3>
-                    <div class="price">₹2799<span>/mo</span></div>
-                    <p style="color: var(--text-secondary);">For power users and fast-moving builders.</p>
+                    <span class="badge">Most Popular</span>
+                    <h3>Professional</h3>
+                    <div class="price">₹<span id="p-price">0</span><span>/mo</span></div>
+                    <div class="slider-container">
+                        <label>Storage: <span id="p-storage-val">10</span>GB</label>
+                        <input type="range" min="10" max="100" value="10" class="slider" id="p-storage">
+
+                        <label>API Tokens: <span id="p-api-val">1</span>M</label>
+                        <input type="range" min="1" max="20" value="1" class="slider" id="p-api">
+                    </div>
                     <ul class="features-list">
-                        <li>Unlimited Projects</li>
-                        <li>Priority AI Execution</li>
-                        <li>Priority Email Support</li>
-                        <li>50GB Cloud Storage</li>
-                        <li>Custom Integrations</li>
+                        <li>Everything in Starter</li>
+                        <li>Pro AI Integration</li>
+                        <li>Secure Cloud Storage</li>
+                        <li>Up to 30 Members</li>
+                        <li>Higher Rate Limits</li>
                     </ul>
-                    <button class="btn btn-full">Upgrade to Pro</button>
+                    <button class="btn btn-full">Upgrade Now</button>
                 </div>
 
                 <div class="pricing-card">
                     <h3>Enterprise</h3>
-                    <div class="price">₹9999<span>/mo</span></div>
-                    <p style="color: var(--text-secondary);">For teams requiring scale and security.</p>
+                    <div class="price">₹<span id="e-price">0</span><span>/mo</span></div>
+                    <div class="slider-container">
+                        <label>Storage: <span id="e-storage-val">50</span>GB</label>
+                        <input type="range" min="50" max="500" value="50" class="slider" id="e-storage">
+
+                        <label>API Tokens: <span id="e-api-val">5</span>M</label>
+                        <input type="range" min="5" max="100" step="5" value="5" class="slider" id="e-api">
+                    </div>
                     <ul class="features-list">
                         <li>Everything in Pro</li>
-                        <li>SSO & Advanced Security</li>
-                        <li>100GB Cloud Storage</li>
+                        <li>Enterprise AI Integration</li>
+                        <li>Enterprise Cloud Storage</li>
+                        <li>Up to 1000 Members</li>
+                        <li>Higher Rate Limits</li>
                     </ul>
-                    <button class="btn btn-full">Upgrade to Enterprise</button>
+                    <button class="btn btn-outline">Upgrade Now</button>
                 </div>
             </div>
         </section>
     </main>
-
     <footer class="footer">
-        <div class="container">
+        <div class="container footer-content">
             <p>&copy; 2026 FlowTide. All rights reserved.</p>
+            <nav class="footer-links">
+                <a href="pages/legal/privacy.html" target="_blank">Privacy Policy, </a>
+                <a href="pages/legal/terms.html" target="_blank">Terms of Service, </a>
+                <a href="pages/legal/cookies.html" target="_blank">Cookie Policy, </a>
+                <a href="pages/contact.html" target="_blank">Contact Us</a>
+            </nav>
         </div>
     </footer>
-    <script type="module" src="js/script.js"></script>
+    <script type="module" src="../js/script.js"></script>
+    <div id="cookie-banner" class="cookie-banner">
+        <div class="cookie-content">
+            <p>FlowTide uses cookies to enhance your workspace experience.
+                Read our <a href="pages/legal/cookies.html">Cookie Policy</a>.</p>
+            <button id="accept-cookies" class="btn-cookie">Accept</button>
+        </div>
+    </div>
 </body>
 
 </html>

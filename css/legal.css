@@ -1,0 +1,140 @@
+/* --- FlowTide Legal CSS --- */
+
+:root {
+    --bg-color: #000000;
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0a0;
+    --accent-white: #ffffff;
+    --border-color: #333333;
+    --font-main: 'Inter', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* --- Header / Navbar Styling --- */
+.navbar {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* --- Legal Content Styling --- */
+.legal-main {
+    padding: 80px 0;
+    flex: 1;
+}
+
+.legal-header {
+    margin-bottom: 60px;
+    border-bottom: 2px solid var(--accent-white);
+    padding-bottom: 20px;
+}
+
+.legal-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+.last-updated {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 10px;
+    display: block;
+}
+
+/* --- Typography for Clauses --- */
+section {
+    margin-bottom: 40px;
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent-white);
+}
+
+p {
+    margin-bottom: 20px;
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+}
+
+ul {
+    margin-bottom: 20px;
+    padding-left: 20px;
+    list-style: square;
+    color: var(--text-secondary);
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+strong {
+    color: var(--accent-white);
+}
+
+/* --- Footer Styling --- */
+.footer {
+    background-color: #000;
+    padding: 40px 0;
+    border-top: 1px solid var(--border-color);
+    margin-top: 80px;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 0.85rem;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: var(--accent-white);
+}
+
+/* --- Responsive Layout --- */
+@media (max-width: 768px) {
+    .legal-header h1 {
+        font-size: 2rem;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .footer-links a {
+        margin: 0 10px;
+    }
+}

@@ -25,7 +25,13 @@ export function initAIRecommender() {
         appendAIMessage('user', prompt);
         input.value = '';
 
-        const loadingDiv = appendAIMessage('ai', 'Architect is analyzing...');
+        // --- UPDATED LOADING STATE ---
+        const loadingHTML = `
+            <div class="typing-indicator">
+                <span></span><span></span><span></span>
+            </div>
+        `;
+        const loadingDiv = appendAIMessage('ai', loadingHTML);
         loadingDiv.classList.add('loading-pulse');
 
         try {
@@ -38,12 +44,13 @@ export function initAIRecommender() {
             if (!response.ok) throw new Error();
             const data = await response.json();
 
+            // Remove animation and show result
             loadingDiv.classList.remove('loading-pulse');
             loadingDiv.querySelector('p').innerHTML = data.text.replace(/\n/g, '<br>');
         } catch (err) {
             loadingDiv.classList.remove('loading-pulse');
             loadingDiv.querySelector('p').style.color = "#ff4444";
-            loadingDiv.querySelector('p').innerText = "Error: Run 'vercel dev' to connect.";
+            loadingDiv.querySelector('p').innerText = "Architect connection failed.";
         }
     };
 
