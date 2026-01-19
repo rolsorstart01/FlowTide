@@ -1,0 +1,13 @@
+{
+    "name": "flowtide-os",
+    "version": "1.0.0",
+    "description": "Forge Internal Business Architect",
+    "main": "js/script.js",
+    "scripts": {
+        "build": "sed -i \"s/REPLACE_WITH_FIREBASE_KEY/$FIREBASE_API_KEY/g\" js/config.js",
+        "dev": "vercel dev"
+    },
+    "dependencies": {
+        "@google/generative-ai": "^0.21.0"
+    }
+}

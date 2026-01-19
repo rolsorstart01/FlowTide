@@ -1,0 +1,25 @@
+{
+    "cleanUrls": true,
+    "rewrites": [
+        {
+            "source": "/api/(.*)",
+            "destination": "/api/$1"
+        },
+        {
+            "source": "/home",
+            "destination": "/pages/home.html"
+        },
+        {
+            "source": "/main",
+            "destination": "/pages/main.html"
+        },
+        {
+            "source": "/pricing",
+            "destination": "/pages/pricing.html"
+        },
+        {
+            "source": "/contact",
+            "destination": "/pages/contact.html"
+        }
+    ]
+}

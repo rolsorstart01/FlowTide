@@ -1,0 +1,93 @@
+<!-- pages/main.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowTide | Workspace</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <p class="nav-label">FlowTide OS</p>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="nav-item active" data-page="dashboard"><a href="#"><i class="ph ph-layout"></i>
+                            <span>Dashboard</span></a></li>
+                    <li class="nav-item" data-page="workflows"><a href="#"><i class="ph ph-kanban"></i>
+                            <span>Workflows</span></a></li>
+                    <li class="nav-item" data-page="ai"><a href="#"><i class="ph ph-magic-wand"></i> <span>AI
+                                Recommender</span></a></li>
+                    <li class="nav-item" data-page="chat"><a href="#"><i class="ph ph-chats"></i> <span>Team
+                                Chat</span></a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-pill">
+                    <div class="avatar">FT</div>
+                    <span>Founder Mode</span>
+                </div>
+            </div>
+        </aside>
+
+        <div class="main-wrapper">
+            <header class="navbar">
+                <div class="container">
+                    <a href="/" class="logo"><img src="../Images/Logo/logo.png" alt="FlowTide Logo"></a>
+
+                    <input type="checkbox" id="menu-btn" class="menu-btn">
+                    <label for="menu-btn" class="menu-icon">
+                        <span class="navicon"></span>
+                    </label>
+
+                    <nav>
+                        <ul>
+                            <li><a href="/home">Home</a></li>
+                            <li><a href="/main">Architect</a></li>
+                            <li><a href="/pricing">Pricing</a></li>
+                            <li><a href="/contact">Contact</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </header>
+
+            <main id="app-content">
+            </main>
+
+            <footer class="footer">
+                <div class="container">
+                    <p>&copy; 2026 FlowTide. All rights reserved.</p>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <div class="popup-overlay" id="popup-overlay" style="display: none;">
+        <div class="popup-content">
+            <button class="close-btn" id="close-popup">&times;</button>
+            <div id="form-container">
+                <h2 style="color: #000;">Join the Waitlist</h2>
+                <form id="waitlist-form">
+                    <input type="email" id="email-input" placeholder="Business Email" required>
+                    <button type="submit" class="btn btn-full" id="submit-btn">Notify Me</button>
+                </form>
+            </div>
+            <div id="success-message" style="display: none;">
+                <div class="success-icon">✓</div>
+                <h3 style="color: #000;">Welcome Aboard!</h3>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../js/script.js"></script>
+</body>
+
+</html>
