@@ -1,20 +1,19 @@
-<!--pages/home.html-->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="description" content="A professional website description for SEO purposes.">
     <title>FlowTide | Home</title>
 
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
 
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/legal.css">
+    <link rel="stylesheet" href="../css/mobile.css">
 </head>
 
 <body>
@@ -38,12 +37,13 @@
             </nav>
         </div>
     </header>
+
     <main>
         <section class="hero">
             <div class="container">
                 <h1>Built to Build Faster.</h1>
                 <p>Streamline every workflow and ship products faster with integrated AI-driven execution.</p>
-                <a href="pages/home.html" class="btn">Get Started</a>
+                <button onclick="openAuthModal()" class="btn" style="width: 15%;">Get Started</button>
             </div>
         </section>
     </main>
@@ -61,6 +61,7 @@
     </footer>
 
     <script type="module" src="../js/script.js"></script>
+
     <div id="cookie-banner" class="cookie-banner">
         <div class="cookie-content">
             <p>FlowTide uses cookies to enhance your workspace experience.
@@ -68,47 +69,9 @@
             <button id="accept-cookies" class="btn-cookie">Dismiss</button>
         </div>
     </div>
+
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-    <div id="auth-modal" class="popup-overlay"
-        style="display: none; z-index: 10000; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center;">
-        <div class="popup-content"
-            style="background: white; padding: 40px; border-radius: 12px; width: 100%; max-width: 400px; position: relative; color: #333;">
-            <button onclick="closeAuthModal()"
-                style="position: absolute; top: 10px; right: 10px; border: none; background: none; font-size: 24px; cursor: pointer;">&times;</button>
-            <h2 id="auth-title" style="margin-bottom: 20px; text-align: center;">Join FlowTide</h2>
-            <input type="email" id="auth-email" placeholder="Email"
-                style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 6px;">
-            <input type="password" id="auth-password" placeholder="Password"
-                style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 6px;">
-            <button id="auth-submit" class="btn btn-full" style="width: 100%;">Login</button>
-            <p id="auth-toggle"
-                style="text-align: center; margin-top: 15px; cursor: pointer; color: var(--accent); font-size: 14px;">
-                Don't have an account? Sign Up</p>
-        </div>
-    </div>
-
-    <script type="module">
-        import { handleLogin, handleSignUp } from '../js/script.js';
-
-        let isLogin = true;
-        const toggle = document.getElementById('auth-toggle');
-        const title = document.getElementById('auth-title');
-        const submit = document.getElementById('auth-submit');
-
-        toggle.onclick = () => {
-            isLogin = !isLogin;
-            title.innerText = isLogin ? "Welcome Back" : "Create Account";
-            submit.innerText = isLogin ? "Login" : "Sign Up";
-            toggle.innerText = isLogin ? "Don't have an account? Sign Up" : "Already have an account? Login";
-        };
-
-        submit.onclick = () => {
-            const e = document.getElementById('auth-email').value;
-            const p = document.getElementById('auth-password').value;
-            isLogin ? handleLogin(e, p) : handleSignUp(e, p);
-        };
-    </script>
     <div id="auth-modal" class="popup-overlay"
         style="display: none; z-index: 10001; background: rgba(0,0,0,0.5); position: fixed; top: 0; left: 0; width: 100%; height: 100%; align-items: center; justify-content: center;">
         <div class="popup-content"
@@ -135,21 +98,46 @@
 
             <div id="auth-form">
                 <input type="email" id="auth-email" placeholder="Email" class="form-input"
-                    style="width: 100%; box-sizing: border-box; margin-bottom: 12px; padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none;">
+                    style="width: 100%; box-sizing: border-box; margin-bottom: 12px; padding: 12px; border: 1px solid var(--accent); border-radius: 6px; outline: none;">
 
                 <input type="password" id="auth-password" placeholder="Password" class="form-input"
-                    style="width: 100%; box-sizing: border-box; margin-bottom: 20px; padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none;">
+                    style="width: 100%; box-sizing: border-box; margin-bottom: 20px; padding: 12px; border: 1px solid var(--accent); border-radius: 6px; outline: none;">
 
                 <button id="auth-submit" class="btn btn-full"
-                    style="width: 100%; padding: 12px; background: #00d2ff; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Login</button>
+                    style="width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Login</button>
 
                 <p id="auth-toggle"
-                    style="margin-top: 20px; cursor: pointer; text-align: center; color: #00d2ff; font-size: 14px; font-weight: 500;">
+                    style="margin-top: 20px; cursor: pointer; text-align: center; color: var(--accent); font-size: 14px; font-weight: 500;">
                     Don't have an account? Sign Up
                 </p>
             </div>
         </div>
     </div>
+
+    <script type="module">
+        import { handleLogin, handleSignUp, handleGoogleLogin } from '../js/script.js';
+
+        // Bind handleGoogleLogin to the window so the HTML button can see it
+        window.loginWithGoogle = handleGoogleLogin;
+
+        let isLogin = true;
+        const toggle = document.getElementById('auth-toggle');
+        const title = document.getElementById('auth-title');
+        const submit = document.getElementById('auth-submit');
+
+        toggle.onclick = () => {
+            isLogin = !isLogin;
+            title.innerText = isLogin ? "Welcome Back" : "Create Account";
+            submit.innerText = isLogin ? "Login" : "Sign Up";
+            toggle.innerText = isLogin ? "Don't have an account? Sign Up" : "Already have an account? Login";
+        };
+
+        submit.onclick = () => {
+            const e = document.getElementById('auth-email').value;
+            const p = document.getElementById('auth-password').value;
+            isLogin ? handleLogin(e, p) : handleSignUp(e, p);
+        };
+    </script>
 </body>
 
 </html>

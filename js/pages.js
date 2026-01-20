@@ -22,18 +22,32 @@ export const pages = {
             </section>
         </div>`,
 
-    workflows: `
+    files: `
         <div class="page-animate">
             <section class="container" style="padding: 60px 24px;">
-                <h1>Workflows</h1>
-                <p style="color: var(--text-secondary);">Your automated business pipelines.</p>
-                <div style="margin-top: 30px; padding: 50px; border: 1px dashed var(--border-subtle); border-radius: 16px; text-align: center;">
-                    <i class="ph ph-git-merge" style="font-size: 3rem; color: var(--border-subtle);"></i>
-                    <p style="margin-top: 15px;">No automations running yet.</p>
-                    <button class="btn" style="margin-top: 20px;">+ Create New Flow</button>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h1 style="font-size: 2rem; font-weight: 700; letter-spacing: -0.02em;">File Storage</h1>
+                        <p style="color: var(--text-secondary); margin-top: 4px;">Manage assets and project documentation.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="triggerUpload()">
+                        <i class="ph ph-upload-simple"></i> Upload File
+                    </button>
+                </div>
+
+                <div style="margin-top: 40px; padding: 80px 24px; border: 1px dashed var(--border-subtle); border-radius: 12px; text-align: center; background: rgba(255,255,255,0.02);">
+                    <div style="background: var(--bg-accent); width: 64px; height: 64px;顺s border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                        <i class="ph ph-folder-simple-plus" style="font-size: 2rem; color: var(--brand-color);"></i>
+                    </div>
+                    <h3 style="font-weight: 600;">No files yet</h3>
+                    <p style="color: var(--text-secondary); max-width: 300px; margin: 8px auto 24px;">
+                        Drop your project assets here or use the LLM to generate templates.
+                    </p>
+                    <button class="btn btn-outline">Browse Files</button>
                 </div>
             </section>
-        </div>`,
+        </div>
+    `,
 
     ai: `
         <div class="page-animate">
@@ -47,7 +61,7 @@ export const pages = {
                     <div class="ai-message system">
                         <div class="ai-avatar"><i class="ph ph-sparkle"></i></div>
                         <div class="bubble">
-                            <p>Hello Founder. I am your Business Architect. I can analyze your workflows, suggest pricing strategies, or draft client emails. What are we optimizing today?</p>
+                            <p>Hello Founder. I am your Business Architect. I can help you with your business, suggest pricing strategies, draft client emails, and more. What are we optimizing today?</p>
                         </div>
                     </div>
                     </div>

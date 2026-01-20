@@ -5,9 +5,15 @@ import {
     orderBy, onSnapshot, where, doc, setDoc, updateDoc, getDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import {
-    getAuth, onAuthStateChanged, createUserWithEmailAndPassword,
-    signInWithEmailAndPassword, signOut,
-    GoogleAuthProvider, signInWithPopup
+    getAuth,
+    onAuthStateChanged,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    GoogleAuthProvider,
+    signInWithPopup,
+    setPersistence,           // Added for persistence support
+    browserLocalPersistence   // Added for persistence support
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 import { firebaseConfig, RZP_KEY_ID, currentUser as legacyUser } from "./config.js";
@@ -19,6 +25,17 @@ import { initCookieConsent } from "./cookie-handler.js";
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+
+// 2. Set Persistence to 'local' 
+// This ensures the session survives tab closes and browser restarts
+
+setPersistence(auth, browserLocalPersistence)
+    .then(() => {
+        console.log("FlowTide: Auth persistence enabled.");
+    })
+    .catch((error) => {
+        console.error(`Auth Error [${error.code}]: ${error.message}`);
+    });
 
 let activeChannelId = null;
 let unsubscribeMessages = null;
@@ -39,6 +56,9 @@ export async function handleSignUp(email, password) {
 
 export async function handleGoogleLogin() {
     const provider = new GoogleAuthProvider();
+    // Force account selection to avoid auto-login loops during testing
+    provider.setCustomParameters({ prompt: 'select_account' });
+
     try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
@@ -56,17 +76,21 @@ export async function handleGoogleLogin() {
                 createdAt: serverTimestamp()
             });
         }
-        window.location.reload();
+
+        // Use an absolute redirect to /main to ensure the session is picked up
+        window.location.href = '/main';
     } catch (err) {
         if (err.code !== 'auth/popup-closed-by-user') {
-            console.error("Google Auth Error:", err);
-            alert(err.message);
+            console.error("Google Auth Error:", err.code, err.message);
+            // Check for domain authorization error specifically
+            if (err.code === 'auth/unauthorized-domain') {
+                alert("Error: 127.0.0.1 is not authorized in Firebase Console.");
+            } else {
+                alert(err.message);
+            }
         }
     }
 }
-
-// Expose to window for the button click
-window.loginWithGoogle = handleGoogleLogin;
 
 export async function handleLogin(email, password) {
     try {
@@ -74,6 +98,11 @@ export async function handleLogin(email, password) {
         window.location.reload();
     } catch (err) { alert(err.message); }
 }
+
+// CRITICAL: Expose functions to window object so HTML onclick can find them
+window.loginWithGoogle = handleGoogleLogin;
+window.handleLogin = handleLogin;
+window.handleSignUp = handleSignUp;
 
 // --- 2. DYNAMIC NAVBAR & AUTH REDIRECT (PLAN GATE) ---
 
@@ -316,3 +345,39 @@ window.onload = () => {
         loadPage('dashboard');
     }
 };
+
+// Function to handle Sidebar Navigation
+const initNavigation = () => {
+    const navItems = document.querySelectorAll('.nav-item');
+    const appContent = document.getElementById('app-content');
+
+    navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            // 1. Remove active class from all items
+            navItems.forEach(nav => nav.classList.remove('active'));
+
+            // 2. Add active class to the clicked item
+            item.classList.add('active');
+
+            // 4. Logic to switch content based on data-page
+            const page = item.getAttribute('data-page');
+            loadPageContent(page);
+        });
+    });
+};
+
+// Simple placeholder for content switching
+const loadPageContent = (page) => {
+    const content = document.getElementById('app-content');
+    console.log(`Switching to: ${page}`);
+
+    // Example: If page is 'chat', you'd load your chat component here
+    if (page === 'chat') {
+        content.innerHTML = '<h1>Team Chat</h1><p>Your team messages will appear here.</p>';
+    }
+};
+
+// Initialize after DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    initNavigation();
+});

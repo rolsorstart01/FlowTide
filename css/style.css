@@ -2267,5 +2267,44 @@ body.loading {
 .btn-google:hover {
     background-color: #f8f8f8 !important;
     border-color: #ccc !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 2px var(--accent 15%);
+}
+
+/* Base style for nav items */
+.nav-item {
+    list-style: none;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    margin: 4px 12px;
+}
+
+.nav-item a {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    text-decoration: none;
+    color: #888;
+    /* Muted gray for inactive */
+    gap: 12px;
+}
+
+/* The Active State */
+.nav-item.active {
+    background: var(--accent 15%);
+    /* Light blue tint matching your theme */
+}
+
+.nav-item.active a {
+    color: var(--accent 15%);
+    /* Your theme's primary blue */
+    font-weight: 600;
+}
+
+.nav-item.active i {
+    color: var(--accent 10%);
+}
+
+/* Hover effect for non-active items */
+.nav-item:not(.active):hover {
+    background: rgba(255, 255, 255, 0.05);
 }

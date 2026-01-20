@@ -1,13 +1,13 @@
-<!--pages/contact.html-->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Contact Us | FlowTide</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/legal.css">
+    <link rel="stylesheet" href="../css/mobile.css">
 </head>
 
 <body>
@@ -74,6 +74,7 @@
             </div>
         </section>
     </main>
+
     <div id="contact-success-overlay" class="popup-overlay" style="display: none;">
         <div class="popup-content">
             <div class="success-icon">✔</div>
@@ -82,6 +83,7 @@
             <button id="close-contact-popup" class="submit-btn">Close</button>
         </div>
     </div>
+
     <footer class="footer">
         <div class="container footer-content">
             <p>&copy; 2026 FlowTide. All rights reserved.</p>
@@ -93,7 +95,9 @@
             </nav>
         </div>
     </footer>
+
     <script type="module" src="../js/script.js"></script>
+
     <div id="cookie-banner" class="cookie-banner">
         <div class="cookie-content">
             <p>FlowTide uses cookies to enhance your workspace experience.
@@ -101,6 +105,7 @@
             <button id="accept-cookies" class="btn-cookie">Dismiss</button>
         </div>
     </div>
+
     <div id="auth-modal" class="popup-overlay"
         style="display: none; z-index: 10001; background: rgba(0,0,0,0.5); position: fixed; top: 0; left: 0; width: 100%; height: 100%; align-items: center; justify-content: center;">
         <div class="popup-content"
@@ -127,21 +132,46 @@
 
             <div id="auth-form">
                 <input type="email" id="auth-email" placeholder="Email" class="form-input"
-                    style="width: 100%; box-sizing: border-box; margin-bottom: 12px; padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none;">
+                    style="width: 100%; box-sizing: border-box; margin-bottom: 12px; padding: 12px; border: 1px solid var(--accent); border-radius: 6px; outline: none;">
 
                 <input type="password" id="auth-password" placeholder="Password" class="form-input"
-                    style="width: 100%; box-sizing: border-box; margin-bottom: 20px; padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none;">
+                    style="width: 100%; box-sizing: border-box; margin-bottom: 20px; padding: 12px; border: 1px solid var(--accent); border-radius: 6px; outline: none;">
 
                 <button id="auth-submit" class="btn btn-full"
-                    style="width: 100%; padding: 12px; background: #00d2ff; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Login</button>
+                    style="width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Login</button>
 
                 <p id="auth-toggle"
-                    style="margin-top: 20px; cursor: pointer; text-align: center; color: #00d2ff; font-size: 14px; font-weight: 500;">
+                    style="margin-top: 20px; cursor: pointer; text-align: center; color: var(--accent); font-size: 14px; font-weight: 500;">
                     Don't have an account? Sign Up
                 </p>
             </div>
         </div>
     </div>
+
+    <script type="module">
+        import { handleLogin, handleSignUp, handleGoogleLogin } from '../js/script.js';
+
+        // Bind Google Login to window for the HTML onclick
+        window.loginWithGoogle = handleGoogleLogin;
+
+        let isLogin = true;
+        const toggle = document.getElementById('auth-toggle');
+        const title = document.getElementById('auth-title');
+        const submit = document.getElementById('auth-submit');
+
+        toggle.onclick = () => {
+            isLogin = !isLogin;
+            title.innerText = isLogin ? "Welcome Back" : "Create Account";
+            submit.innerText = isLogin ? "Login" : "Sign Up";
+            toggle.innerText = isLogin ? "Don't have an account? Sign Up" : "Already have an account? Login";
+        };
+
+        submit.onclick = () => {
+            const email = document.getElementById('auth-email').value;
+            const pass = document.getElementById('auth-password').value;
+            isLogin ? handleLogin(email, pass) : handleSignUp(email, pass);
+        };
+    </script>
 </body>
 
 </html>

@@ -1,0 +1,289 @@
+/* FlowTide Mobile Optimization - v1.0.0 */
+
+:root {
+    --safe-area-bottom: env(safe-area-inset-bottom);
+}
+
+@media screen and (max-width: 768px) {
+
+    /* 1. Global Reset & Typography */
+    html,
+    body {
+        overflow-x: hidden;
+        -webkit-text-size-adjust: 100%;
+    }
+
+    .container {
+        padding: 0 20px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    h1 {
+        font-size: 2.2rem !important;
+        line-height: 1.2;
+    }
+
+    h2 {
+        font-size: 1.8rem !important;
+    }
+
+    /* 2. Navigation Hardware (Checkbox Hack) */
+    .navbar nav {
+        position: fixed;
+        top: 70px;
+        /* Navbar height */
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 70px);
+        background: rgba(10, 10, 10, 0.98);
+        backdrop-filter: blur(10px);
+        transition: 0.3s ease-in-out;
+        z-index: 999;
+    }
+
+    .navbar ul {
+        flex-direction: column;
+        align-items: center;
+        padding-top: 50px;
+    }
+
+    .navbar ul li {
+        margin: 20px 0;
+    }
+
+    .menu-btn:checked~nav {
+        left: 0;
+    }
+
+    /* 3. Dashboard / Workspace Sidebar (main.html) */
+    .app-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 70px;
+        z-index: 1000;
+        background: #111;
+        border-right: none;
+        border-top: 1px solid #333;
+        padding: 0;
+    }
+
+    .sidebar-header,
+    .sidebar-footer {
+        display: none;
+        /* Hide branding/user info in bottom nav */
+    }
+
+    .sidebar-nav ul {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        height: 100%;
+    }
+
+    .nav-item {
+        margin: 0 !important;
+        flex: 1;
+        text-align: center;
+    }
+
+    .nav-item a {
+        flex-direction: column;
+        font-size: 10px;
+        gap: 4px;
+    }
+
+    .nav-item i {
+        font-size: 20px;
+    }
+
+    .main-wrapper {
+        margin-left: 0;
+        padding-bottom: 80px;
+        /* Room for bottom nav */
+    }
+
+    /* 4. Pricing Cards (pricing.html) */
+    .pricing-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        padding: 20px 0;
+    }
+
+    .pricing-card {
+        width: 100% !important;
+        margin: 0;
+    }
+
+    .slider-container input[type="range"] {
+        height: 25px;
+        /* Thicker touch targets for thumbs */
+    }
+
+    /* 5. Contact & Forms (contact.html) */
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .form-input,
+    input,
+    textarea {
+        font-size: 16px !important;
+        /* Prevents auto-zoom on iOS */
+    }
+
+    .contact-info {
+        text-align: center;
+    }
+
+    .social-links {
+        justify-content: center;
+    }
+
+    /* 6. Modals (Auth & Popups) */
+    .popup-content {
+        width: 95% !important;
+        padding: 25px !important;
+        margin: 10px;
+    }
+
+    .btn-google {
+        padding: 14px !important;
+    }
+
+    /* 7. Legal Pages */
+    .legal-main {
+        padding: 100px 20px 40px 20px;
+    }
+}
+
+/* ../css/mobile.css - Double Navbar Optimization */
+
+@media screen and (max-width: 768px) {
+
+    /* 1. LAYOUT RESET */
+    .app-container {
+        display: block;
+        /* Remove flex-row */
+    }
+
+    .main-wrapper {
+        margin-left: 0 !important;
+        /* Remove sidebar gap */
+        padding-bottom: 80px;
+        /* Space for the bottom bar */
+        min-height: 100vh;
+    }
+
+    /* 2. TOP NAVBAR (Global Site Links) */
+    .main-wrapper .navbar {
+        position: sticky;
+        top: 0;
+        z-index: 1001;
+        height: 60px;
+        background: #0a0a0a;
+        border-bottom: 1px solid #222;
+    }
+
+    .navbar .container {
+        justify-content: space-between;
+        padding: 0 15px;
+    }
+
+    /* Hide the text links behind the burger icon */
+    .navbar nav {
+        position: fixed;
+        top: 60px;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background: #111;
+        transition: 0.3s;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+    }
+
+    #menu-btn:checked~nav {
+        right: 0;
+    }
+
+    /* 3. BOTTOM SIDEBAR (App Workspace Links) */
+    .sidebar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 70px;
+        /* Standard mobile tab bar height */
+        background: #111;
+        border-right: none;
+        border-top: 1px solid #333;
+        padding: 0;
+        z-index: 1000;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .sidebar-header,
+    .sidebar-footer {
+        display: none;
+        /* Hide branding and user-pill on mobile bottom bar */
+    }
+
+    .sidebar-nav {
+        width: 100%;
+    }
+
+    .sidebar-nav ul {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+    }
+
+    .sidebar-nav ul li {
+        width: 25%;
+        /* 4 items = 25% each */
+        margin: 0 !important;
+    }
+
+    .sidebar-nav ul li a {
+        flex-direction: column;
+        /* Icon on top of text */
+        gap: 4px;
+        font-size: 10px;
+        padding: 10px 0;
+        color: #888;
+    }
+
+    .sidebar-nav ul li a i {
+        font-size: 22px;
+        /* Make icons prominent */
+    }
+
+    .sidebar-nav ul li.active a {
+        color: #00d2ff;
+        /* Active color for current app page */
+        background: transparent;
+    }
+
+    /* 4. WORKSPACE CONTENT ADJUSTMENT */
+    #app-content {
+        padding: 20px;
+        margin-top: 10px;
+    }
+
+    /* Hide extra footers in the workspace to save space */
+    .main-wrapper .footer {
+        display: none;
+    }
+}
