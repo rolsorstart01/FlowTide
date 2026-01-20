@@ -50,7 +50,6 @@ onAuthStateChanged(auth, (user) => {
     if (!navUl) return;
 
     if (user) {
-        // Logged In State
         navUl.innerHTML = `
             <li><a href="/home">Home</a></li>
             <li><a href="/main">Architect</a></li>
@@ -60,7 +59,6 @@ onAuthStateChanged(auth, (user) => {
         const logoutBtn = document.getElementById('nav-logout');
         if (logoutBtn) logoutBtn.onclick = () => signOut(auth).then(() => window.location.reload());
     } else {
-        // Logged Out State
         navUl.innerHTML = `
             <li><a href="/home">Home</a></li>
             <li><a href="/pricing">Pricing</a></li>
@@ -73,7 +71,6 @@ onAuthStateChanged(auth, (user) => {
 // --- 3. PRICING & PAYMENTS ---
 
 function initPricingLogic() {
-    console.log("Pricing Logic Triggered");
     const setupSlider = (planId, margin, storageRate, apiRate) => {
         const sSlider = document.getElementById(`${planId}-storage`);
         const aSlider = document.getElementById(`${planId}-api`);
@@ -110,11 +107,24 @@ export async function processPayment(planName, amount) {
     }
 
     try {
+        // --- FIX: STRIP COMMAS & CONVERT TO NUMBER ---
+        const cleanAmount = typeof amount === 'string'
+            ? parseInt(amount.replace(/[^0-9]/g, ''))
+            : Math.round(amount);
+
+        if (isNaN(cleanAmount)) throw new Error("Invalid amount");
+
         const response = await fetch('/api/create-order', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amount, planName })
+            body: JSON.stringify({ amount: cleanAmount, planName })
         });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Server Error");
+        }
+
         const order = await response.json();
 
         const options = {
@@ -134,11 +144,13 @@ export async function processPayment(planName, amount) {
             },
             theme: { color: "#00d2ff" }
         };
+
         const rzp = new window.Razorpay(options);
         rzp.open();
+
     } catch (err) {
-        console.error(err);
-        alert("Payment initialization failed.");
+        console.error("RZP Initialization Error:", err);
+        alert("Payment initialization failed: " + err.message);
     }
 }
 
@@ -159,11 +171,9 @@ function initForgeChat() {
     const list = document.getElementById('channel-list');
     const chatForm = document.getElementById('chat-form');
     const chatInput = document.getElementById('chat-input');
-    const sendBtn = document.getElementById('send-btn');
 
     if (!list) return;
 
-    // Load Channels
     const q = query(collection(db, "channels"), where("companyId", "==", legacyUser.companyId), orderBy("name", "asc"));
     onSnapshot(q, (snapshot) => {
         list.innerHTML = "";
@@ -176,14 +186,13 @@ function initForgeChat() {
         });
     });
 
-    // Handle Sending Messages
     if (chatForm) {
         chatForm.onsubmit = async (e) => {
             e.preventDefault();
             if (!activeChannelId || !chatInput.value.trim()) return;
 
             const text = chatInput.value;
-            chatInput.value = ""; // Clear immediately
+            chatInput.value = "";
 
             await addDoc(collection(db, "channels", activeChannelId, "messages"), {
                 text: text,
@@ -240,7 +249,6 @@ document.addEventListener('click', (e) => {
 window.onload = () => {
     initCookieConsent();
 
-    // Global Access for Inline HTML calls
     window.openAuthModal = () => {
         const modal = document.getElementById('auth-modal');
         if (modal) modal.style.display = 'flex';
@@ -263,7 +271,6 @@ window.onload = () => {
         }
     }
 
-    // Secondary check for pricing sliders on non-SPA pages
     if (document.getElementById('s-storage')) {
         initPricingLogic();
     }
