@@ -68,6 +68,47 @@
             <button id="accept-cookies" class="btn-cookie">Accept</button>
         </div>
     </div>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <div id="auth-modal" class="popup-overlay"
+        style="display: none; z-index: 10000; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center;">
+        <div class="popup-content"
+            style="background: white; padding: 40px; border-radius: 12px; width: 100%; max-width: 400px; position: relative; color: #333;">
+            <button onclick="closeAuthModal()"
+                style="position: absolute; top: 10px; right: 10px; border: none; background: none; font-size: 24px; cursor: pointer;">&times;</button>
+            <h2 id="auth-title" style="margin-bottom: 20px; text-align: center;">Join FlowTide</h2>
+            <input type="email" id="auth-email" placeholder="Email"
+                style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 6px;">
+            <input type="password" id="auth-password" placeholder="Password"
+                style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 6px;">
+            <button id="auth-submit" class="btn btn-full" style="width: 100%;">Login</button>
+            <p id="auth-toggle"
+                style="text-align: center; margin-top: 15px; cursor: pointer; color: var(--accent); font-size: 14px;">
+                Don't have an account? Sign Up</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { handleLogin, handleSignUp } from '../js/script.js';
+
+        let isLogin = true;
+        const toggle = document.getElementById('auth-toggle');
+        const title = document.getElementById('auth-title');
+        const submit = document.getElementById('auth-submit');
+
+        toggle.onclick = () => {
+            isLogin = !isLogin;
+            title.innerText = isLogin ? "Welcome Back" : "Create Account";
+            submit.innerText = isLogin ? "Login" : "Sign Up";
+            toggle.innerText = isLogin ? "Don't have an account? Sign Up" : "Already have an account? Login";
+        };
+
+        submit.onclick = () => {
+            const e = document.getElementById('auth-email').value;
+            const p = document.getElementById('auth-password').value;
+            isLogin ? handleLogin(e, p) : handleSignUp(e, p);
+        };
+    </script>
 </body>
 
 </html>

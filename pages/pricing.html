@@ -1,4 +1,3 @@
-<!--pages/pricing.html-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,6 +10,7 @@
     <link rel="stylesheet" href="../css/pricing.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 
 <body>
@@ -22,10 +22,6 @@
             <label for="menu-btn" class="menu-icon"><span class="navicon"></span></label>
             <nav>
                 <ul>
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="../main.html">Architect</a></li>
-                    <li><a href="pricing.html">Pricing</a></li>
-                    <li><a href="contact.html">Contact</a></li>
                 </ul>
             </nav>
         </div>
@@ -41,84 +37,100 @@
             <div class="pricing-grid">
                 <div class="pricing-card">
                     <h3>Starter</h3>
-                    <div class="price">₹<span id="s-price">0</span><span>/mo</span></div>
+                    <div class="price">₹<span id="s-price">500</span><span>/mo</span></div>
                     <div class="slider-container">
                         <label>Storage: <span id="s-storage-val">5</span>GB</label>
                         <input type="range" min="5" max="50" value="5" class="slider" id="s-storage">
-
                         <label>API Tokens: <span id="s-api-val">1</span>M</label>
                         <input type="range" min="1" max="10" value="1" class="slider" id="s-api">
                     </div>
-                    <ul class="features-list">
-                        <li>Standard AI Integration</li>
-                        <li>Secure Cloud Storage</li>
-                        <li>Up to 8 Members per team</li>
-                    </ul>
-                    <button class="btn btn-outline">Get Started</button>
+                    <button class="btn btn-outline" onclick="initiateUpgrade('Starter')">Get Started</button>
                 </div>
 
                 <div class="pricing-card popular">
                     <span class="badge">Most Popular</span>
                     <h3>Professional</h3>
-                    <div class="price">₹<span id="p-price">0</span><span>/mo</span></div>
+                    <div class="price">₹<span id="p-price">1500</span><span>/mo</span></div>
                     <div class="slider-container">
                         <label>Storage: <span id="p-storage-val">10</span>GB</label>
                         <input type="range" min="10" max="100" value="10" class="slider" id="p-storage">
-
                         <label>API Tokens: <span id="p-api-val">1</span>M</label>
                         <input type="range" min="1" max="20" value="1" class="slider" id="p-api">
                     </div>
-                    <ul class="features-list">
-                        <li>Everything in Starter</li>
-                        <li>Pro AI Integration</li>
-                        <li>Secure Cloud Storage</li>
-                        <li>Up to 30 Members</li>
-                        <li>Higher Rate Limits</li>
-                    </ul>
-                    <button class="btn btn-full">Upgrade Now</button>
+                    <button class="btn btn-full" onclick="initiateUpgrade('Professional')">Upgrade Now</button>
                 </div>
 
                 <div class="pricing-card">
                     <h3>Enterprise</h3>
-                    <div class="price">₹<span id="e-price">0</span><span>/mo</span></div>
+                    <div class="price">₹<span id="e-price">2500</span><span>/mo</span></div>
                     <div class="slider-container">
                         <label>Storage: <span id="e-storage-val">50</span>GB</label>
                         <input type="range" min="50" max="500" value="50" class="slider" id="e-storage">
-
                         <label>API Tokens: <span id="e-api-val">5</span>M</label>
                         <input type="range" min="5" max="100" step="5" value="5" class="slider" id="e-api">
                     </div>
-                    <ul class="features-list">
-                        <li>Everything in Pro</li>
-                        <li>Enterprise AI Integration</li>
-                        <li>Enterprise Cloud Storage</li>
-                        <li>Up to 1000 Members</li>
-                        <li>Higher Rate Limits</li>
-                    </ul>
-                    <button class="btn btn-outline">Upgrade Now</button>
+                    <button class="btn btn-outline" onclick="initiateUpgrade('Enterprise')">Upgrade Now</button>
                 </div>
             </div>
         </section>
     </main>
-    <footer class="footer">
-        <div class="container footer-content">
-            <p>&copy; 2026 FlowTide. All rights reserved.</p>
-            <nav class="footer-links">
-                <a href="pages/legal/privacy.html" target="_blank">Privacy Policy, </a>
-                <a href="pages/legal/terms.html" target="_blank">Terms of Service, </a>
-                <a href="pages/legal/cookies.html" target="_blank">Cookie Policy, </a>
-                <a href="pages/contact.html" target="_blank">Contact Us</a>
-            </nav>
-        </div>
-    </footer>
-    <script type="module" src="../js/script.js"></script>
-    <div id="cookie-banner" class="cookie-banner">
-        <div class="cookie-content">
-            <p>FlowTide uses cookies to enhance your workspace experience.
-                Read our <a href="pages/legal/cookies.html">Cookie Policy</a>.</p>
-            <button id="accept-cookies" class="btn-cookie">Accept</button>
+
+    <div id="auth-modal" class="popup-overlay" style="display: none; z-index: 10001;">
+        <div class="popup-content"
+            style="max-width: 400px; background: white; color: #333; padding: 40px; border-radius: 12px;">
+            <button class="close-btn" onclick="closeAuthModal()"
+                style="float:right; border:none; background:none; font-size:20px; cursor:pointer;">&times;</button>
+            <h2 id="auth-title" style="text-align: center;">Welcome to FlowTide</h2>
+            <div style="margin-top: 20px;">
+                <input type="email" id="auth-email" placeholder="Email" class="form-input"
+                    style="width:100%; margin-bottom:10px; padding:10px; border:1px solid #ddd; border-radius:6px;">
+                <input type="password" id="auth-password" placeholder="Password" class="form-input"
+                    style="width:100%; margin-bottom:20px; padding:10px; border:1px solid #ddd; border-radius:6px;">
+                <button id="auth-submit" class="btn btn-full" style="width:100%;">Login</button>
+                <p id="auth-toggle" style="margin-top:15px; cursor:pointer; text-align:center; color: var(--accent);">
+                    Don't have an account? Sign Up</p>
+            </div>
         </div>
     </div>
+
+    <script type="module">
+        import { processPayment, handleLogin, handleSignUp } from '../js/script.js';
+
+        // 1. Upgrade Hook: Gets current price from the span updated by sliders
+        window.initiateUpgrade = (plan) => {
+            const prefix = plan === 'Starter' ? 's' : (plan === 'Professional' ? 'p' : 'e');
+            const amount = parseInt(document.getElementById(`${prefix}-price`).innerText.replace(/,/g, ''));
+            processPayment(plan, amount);
+        };
+
+        // 2. Auth Modal UI Toggle Logic
+        let isLogin = true;
+        const toggle = document.getElementById('auth-toggle');
+        const submit = document.getElementById('auth-submit');
+        const title = document.getElementById('auth-title');
+
+        toggle.onclick = () => {
+            isLogin = !isLogin;
+            title.innerText = isLogin ? "Welcome Back" : "Create Account";
+            submit.innerText = isLogin ? "Login" : "Sign Up";
+            toggle.innerText = isLogin ? "Need an account? Sign Up" : "Already have an account? Login";
+        };
+
+        submit.onclick = () => {
+            const email = document.getElementById('auth-email').value;
+            const pass = document.getElementById('auth-password').value;
+            isLogin ? handleLogin(email, pass) : handleSignUp(email, pass);
+        };
+        // Inside pricing.html script block
+        window.initiateUpgrade = (name) => {
+            const prefix = name === 'Starter' ? 's' : (name === 'Professional' ? 'p' : 'e');
+            const amountText = document.getElementById(`${prefix}-price`).innerText;
+            const amount = parseInt(amountText.replace(/,/g, ''));
+
+            // Calls the logic from script.js
+            processPayment(name, amount);
+        };
+    </script>
 </body>
 
 </html>

@@ -128,6 +128,13 @@ body {
 .btn-full {
     width: 100%;
     margin-top: 15px;
+    color: var(--accent);
+    background: var(--card-bg);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.2s;
+    cursor: pointer;
 }
 
 /* Modal Styles */
@@ -2107,4 +2114,147 @@ a:hover {
         flex-direction: column;
         text-align: center;
     }
+}
+
+/* --- AUTH MODAL STYLING --- */
+.popup-overlay {
+    background: rgba(10, 11, 14, 0.85) !important;
+    /* Darker, semi-transparent backdrop */
+    backdrop-filter: blur(8px);
+}
+
+.popup-content {
+    background: #161b22 !important;
+    /* GitHub-style dark grey/black */
+    border: 1px solid var(--border-subtle, #30363d);
+    border-radius: 16px !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    color: #ffffff !important;
+    padding: 40px !important;
+}
+
+.popup-content h2 {
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+/* Input Fields */
+.form-input {
+    background: #0d1117 !important;
+    border: 1px solid #30363d !important;
+    color: white !important;
+    padding: 12px 16px !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    border-color: #00d2ff !important;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.2);
+}
+
+/* Auth Submit Button (Gradient) */
+#auth-submit {
+    background: linear-gradient(135deg, --accent-white 0%, --accent-white 100%) !important;
+    color: var(--bg-black) !important;
+    border: none !important;
+    font-weight: 600 !important;
+    padding: 14px !important;
+    border-radius: 8px !important;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#auth-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 210, 255, 0.4);
+}
+
+/* Close & Toggle Text */
+.close-btn {
+    color: #8b949e !important;
+}
+
+#auth-toggle {
+    color: #58a6ff !important;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+/* --- AUTH MODAL & LOGIN UI --- */
+
+/* 1. The Backdrop */
+.popup-overlay {
+    background: rgba(10, 11, 14, 0.85) !important;
+    backdrop-filter: blur(10px);
+    /* Modern blur effect */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 2. The Popup Card */
+.popup-content {
+    background: #161b22 !important;
+    /* Deep charcoal/black */
+    border: 1px solid #30363d !important;
+    /* Subtle border */
+    border-radius: 16px !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    color: #ffffff !important;
+    padding: 40px !important;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* 3. Inputs (Dark Mode) */
+.form-input {
+    background: #0d1117 !important;
+    border: 1px solid #30363d !important;
+    color: #ffffff !important;
+    padding: 12px 16px !important;
+    margin-bottom: 12px;
+    border-radius: 8px !important;
+    width: 100%;
+}
+
+.form-input:focus {
+    border-color: var(--accent) !important;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 210, 255, 0.2);
+}
+
+/* 4. The Gradient Submit Button */
+#auth-submit,
+.btn-login-nav {
+    background: linear-gradient(135deg, --accent-white 0%, --accent 100%) !important;
+    color: var(--bg-black) !important;
+    border: none !important;
+    font-weight: 600 !important;
+    padding: 12px !important;
+    border-radius: 8px !important;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#auth-submit:hover,
+.btn-login-nav:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 210, 255, 0.3);
+}
+
+/* 5. Toggle Link Text */
+#auth-toggle {
+    color: var(--accent) !important;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+#auth-toggle:hover {
+    color: var(--accent);
+    text-decoration: underline;
 }
