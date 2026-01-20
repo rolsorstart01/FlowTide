@@ -1,4 +1,4 @@
-// js/ai-service.js
+// ../js/ai-service.js
 import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
 // ⚠️ SECURITY WARNING: In a real production app (2026 standards), 

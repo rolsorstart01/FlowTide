@@ -1,3 +1,4 @@
+//  ../js/ai-handler.js
 export function initAIRecommender() {
     const input = document.getElementById('ai-user-input');
     const sendBtn = document.getElementById('ai-send-btn');

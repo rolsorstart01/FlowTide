@@ -1,3 +1,4 @@
+// ../js/pricing-handler.js
 export function initPricingSliders() {
     const plans = [
         { id: 'starter', margin: 500, storageRate: 10, apiRate: 50 },

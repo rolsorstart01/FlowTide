@@ -1,4 +1,5 @@
 /**
+ * ../js/cookie-handler.js
  * FlowTide Cookie Consent Handler
  * Manages the visibility and state of the legal consent banner.
  */

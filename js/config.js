@@ -1,4 +1,4 @@
-// js/config.js
+// ../js/config.js
 export const firebaseConfig = {
   // If we are on localhost, use the real key. If not, Vercel handles it.
   apiKey: window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost"

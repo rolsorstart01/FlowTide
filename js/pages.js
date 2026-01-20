@@ -1,4 +1,4 @@
-// js/pages.js
+// ../js/pages.js
 
 export const pages = {
     dashboard: `
