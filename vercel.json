@@ -21,16 +21,10 @@
         {
             "source": "/contact",
             "destination": "/pages/contact.html"
-        }
-    ],
-    "routes": [
-        {
-            "handle": "filesystem"
         },
         {
-            "src": "/.*",
-            "status": 404,
-            "dest": "/pages/home.html"
+            "source": "/((?!api/).*)",
+            "destination": "/pages/home.html"
         }
     ]
 }
