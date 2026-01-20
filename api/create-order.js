@@ -2,28 +2,28 @@
 const Razorpay = require('razorpay');
 
 module.exports = async (req, res) => {
-    // Force JSON headers so the browser knows what to expect
+    // Force JSON headers to prevent "Unexpected token A" on the frontend
     res.setHeader('Content-Type', 'application/json');
 
     if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method Not Allowed' });
+        return res.status(405).json({ error: "Method not allowed" });
     }
 
     try {
         const { amount, planName } = req.body;
 
-        // Vercel build command will replace this string with your actual secret
-        const INJECTED_SECRET = "REPLACE_WITH_RZP_SECRET";
+        // Vercel build will replace this placeholder with your actual secret
+        const SECRET = "REPLACE_WITH_RZP_SECRET";
 
         const instance = new Razorpay({
             key_id: 'rzp_live_S61J7p7YKjOlxz',
-            key_secret: INJECTED_SECRET,
+            key_secret: SECRET
         });
 
         const options = {
             amount: Math.round(Number(amount) * 100), // Convert to paise
             currency: "INR",
-            receipt: `rcpt_${Date.now()}`,
+            receipt: `flow_${Date.now()}`,
             notes: { plan: planName }
         };
 
@@ -31,10 +31,10 @@ module.exports = async (req, res) => {
         return res.status(200).json(order);
 
     } catch (err) {
-        console.error("RAZORPAY ERROR:", err);
-        // We return JSON even on error to prevent the "Unexpected Token A" crash
+        console.error("RAZORPAY_CRASH:", err.message);
+        // We return JSON even on error so your frontend catch block works
         return res.status(500).json({
-            error: "Razorpay order creation failed",
+            error: "Internal Server Error",
             details: err.message
         });
     }

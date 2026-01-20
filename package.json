@@ -2,10 +2,10 @@
     "name": "flowtide-os",
     "version": "1.0.0",
     "scripts": {
-        "build": "sed -i \"s/REPLACE_WITH_FIREBASE_KEY/$FIREBASE_API_KEY/g\" js/config.js",
-        "install": "npm install @google/generative-ai"
+        "build": "sed -i \"s/REPLACE_WITH_FIREBASE_KEY/$FIREBASE_API_KEY/g\" js/config.js && sed -i \"s/REPLACE_WITH_RZP_SECRET/$RAZORPAY_SECRET/g\" api/create-order.js"
     },
     "dependencies": {
-        "@google/generative-ai": "^0.21.0"
+        "@google/generative-ai": "^0.21.0",
+        "razorpay": "^2.9.2"
     }
 }
