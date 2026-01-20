@@ -1,6 +1,5 @@
 {
     "cleanUrls": true,
-    "outputDirectory": ".",
     "rewrites": [
         {
             "source": "/api/(.*)",
@@ -23,7 +22,7 @@
             "destination": "/pages/contact.html"
         },
         {
-            "source": "/((?!api/).*)",
+            "source": "/((?!api|pages|css|js|Images|legal).*)",
             "destination": "/pages/home.html"
         }
     ]
