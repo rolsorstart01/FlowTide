@@ -2,11 +2,12 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
     getFirestore, collection, addDoc, serverTimestamp, query,
-    orderBy, onSnapshot, where, doc, setDoc, updateDoc
+    orderBy, onSnapshot, where, doc, setDoc, updateDoc, getDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import {
     getAuth, onAuthStateChanged, createUserWithEmailAndPassword,
-    signInWithEmailAndPassword, signOut
+    signInWithEmailAndPassword, signOut,
+    GoogleAuthProvider, signInWithPopup
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 import { firebaseConfig, RZP_KEY_ID, currentUser as legacyUser } from "./config.js";
@@ -36,6 +37,37 @@ export async function handleSignUp(email, password) {
     } catch (err) { alert(err.message); }
 }
 
+export async function handleGoogleLogin() {
+    const provider = new GoogleAuthProvider();
+    try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+
+        // Check if user exists in Firestore, if not, create them
+        const userDocRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (!userDoc.exists()) {
+            await setDoc(userDocRef, {
+                email: user.email,
+                displayName: user.displayName || '',
+                photoURL: user.photoURL || '',
+                plan: 'free',
+                createdAt: serverTimestamp()
+            });
+        }
+        window.location.reload();
+    } catch (err) {
+        if (err.code !== 'auth/popup-closed-by-user') {
+            console.error("Google Auth Error:", err);
+            alert(err.message);
+        }
+    }
+}
+
+// Expose to window for the button click
+window.loginWithGoogle = handleGoogleLogin;
+
 export async function handleLogin(email, password) {
     try {
         await signInWithEmailAndPassword(auth, email, password);
@@ -43,28 +75,66 @@ export async function handleLogin(email, password) {
     } catch (err) { alert(err.message); }
 }
 
-// --- 2. DYNAMIC NAVBAR & UI STATE ---
+// --- 2. DYNAMIC NAVBAR & AUTH REDIRECT (PLAN GATE) ---
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
     const navUl = document.querySelector('.navbar ul');
-    if (!navUl) return;
+    const path = window.location.pathname;
 
     if (user) {
-        navUl.innerHTML = `
-            <li><a href="/home">Home</a></li>
-            <li><a href="/main">Architect</a></li>
-            <li><a href="/pricing">Pricing</a></li>
-            <li><a href="#" id="nav-logout">Logout</a></li>
-        `;
-        const logoutBtn = document.getElementById('nav-logout');
-        if (logoutBtn) logoutBtn.onclick = () => signOut(auth).then(() => window.location.reload());
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        const userData = userDoc.exists() ? userDoc.data() : null;
+        const userPlan = userData ? userData.plan : 'free';
+
+        // Redirection Logic
+        const isAllowedPage = path.includes('pricing') || path.includes('contact') || path.includes('legal');
+
+        // OWNER BYPASS: If you are the owner, skip all restrictions
+        if (userPlan === 'Owner') {
+            console.log("God Mode Active: Welcome, Architect.");
+        }
+        // STANDARD GATE: Redirect free users
+        else if (userPlan === 'free' && !isAllowedPage) {
+            console.log("Access Denied: Free plan detected. Redirecting to Pricing...");
+            window.location.href = '/pricing';
+            return;
+        }
+
+        if (navUl) {
+            navUl.innerHTML = `
+                <li><a href="/home">Home</a></li>
+                <li><a href="/main">Architect</a></li>
+                <li><a href="/pricing">Pricing</a></li>
+                <li><a href="#" id="nav-logout">Logout</a></li>
+            `;
+            const logoutBtn = document.getElementById('nav-logout');
+            if (logoutBtn) logoutBtn.onclick = () => signOut(auth).then(() => window.location.href = "/home");
+        }
+
+        // Special UI Feedback for Owner
+        if (userPlan === 'Owner') {
+            const avatar = document.querySelector('.avatar');
+            if (avatar) {
+                avatar.style.border = '2px solid #ff3e3e';
+                avatar.title = 'System Architect Mode';
+
+                // If using Google, show profile pic
+                if (userData.photoURL) {
+                    avatar.style.backgroundImage = `url(${userData.photoURL})`;
+                    avatar.style.backgroundSize = 'cover';
+                    avatar.innerText = '';
+                }
+            }
+        }
     } else {
-        navUl.innerHTML = `
-            <li><a href="/home">Home</a></li>
-            <li><a href="/pricing">Pricing</a></li>
-            <li><a href="/contact">Contact</a></li>
-            <li><button class="btn-login-nav" onclick="openAuthModal()">Login</button></li>
-        `;
+        if (navUl) {
+            navUl.innerHTML = `
+                <li><a href="/home">Home</a></li>
+                <li><a href="/pricing">Pricing</a></li>
+                <li><a href="/contact">Contact</a></li>
+                <li><button class="btn-login-nav" onclick="openAuthModal()">Login</button></li>
+            `;
+        }
     }
 });
 
@@ -83,6 +153,8 @@ function initPricingLogic() {
         const update = () => {
             const sVal = parseInt(sSlider.value);
             const aVal = parseInt(aSlider.value);
+
+            // Check for Owner/Unlimited display logic
             if (sDisplay) sDisplay.innerText = sVal;
             if (aDisplay) aDisplay.innerText = aVal;
 
@@ -101,29 +173,18 @@ function initPricingLogic() {
 }
 
 export async function processPayment(planName, amount) {
-    if (!auth.currentUser) {
-        alert("Please login to upgrade.");
-        return openAuthModal();
-    }
+    if (!auth.currentUser) return openAuthModal();
 
     try {
-        // --- FIX: STRIP COMMAS & CONVERT TO NUMBER ---
         const cleanAmount = typeof amount === 'string'
             ? parseInt(amount.replace(/[^0-9]/g, ''))
             : Math.round(amount);
-
-        if (isNaN(cleanAmount)) throw new Error("Invalid amount");
 
         const response = await fetch('/api/create-order', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ amount: cleanAmount, planName })
         });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || "Server Error");
-        }
 
         const order = await response.json();
 
@@ -132,26 +193,23 @@ export async function processPayment(planName, amount) {
             amount: order.amount,
             currency: "INR",
             name: "FlowTide",
-            description: `Plan: ${planName}`,
+            description: `Upgrade to ${planName}`,
             order_id: order.id,
             handler: async (res) => {
                 await updateDoc(doc(db, "users", auth.currentUser.uid), {
                     plan: planName,
-                    paymentId: res.razorpay_payment_id
+                    paymentId: res.razorpay_payment_id,
+                    upgradedAt: serverTimestamp()
                 });
-                alert("Success! Welcome to " + planName);
-                window.location.reload();
+                alert("Success! Your plan has been upgraded.");
+                window.location.href = '/main';
             },
             theme: { color: "#00d2ff" }
         };
 
         const rzp = new window.Razorpay(options);
         rzp.open();
-
-    } catch (err) {
-        console.error("RZP Initialization Error:", err);
-        alert("Payment initialization failed: " + err.message);
-    }
+    } catch (err) { alert("Payment error: " + err.message); }
 }
 
 // --- 4. NAVIGATION & CHAT (SPA) ---
@@ -160,7 +218,6 @@ function loadPage(pageKey) {
     const content = document.getElementById('app-content');
     if (content && pages[pageKey]) {
         content.innerHTML = pages[pageKey];
-        content.className = 'page-animate';
     }
     if (pageKey === 'chat') initForgeChat();
     if (pageKey === 'ai') initAIRecommender();
@@ -169,11 +226,7 @@ function loadPage(pageKey) {
 
 function initForgeChat() {
     const list = document.getElementById('channel-list');
-    const chatForm = document.getElementById('chat-form');
-    const chatInput = document.getElementById('chat-input');
-
     if (!list) return;
-
     const q = query(collection(db, "channels"), where("companyId", "==", legacyUser.companyId), orderBy("name", "asc"));
     onSnapshot(q, (snapshot) => {
         list.innerHTML = "";
@@ -185,38 +238,12 @@ function initForgeChat() {
             list.appendChild(div);
         });
     });
-
-    if (chatForm) {
-        chatForm.onsubmit = async (e) => {
-            e.preventDefault();
-            if (!activeChannelId || !chatInput.value.trim()) return;
-
-            const text = chatInput.value;
-            chatInput.value = "";
-
-            await addDoc(collection(db, "channels", activeChannelId, "messages"), {
-                text: text,
-                senderId: auth.currentUser?.uid || legacyUser.id,
-                senderName: auth.currentUser?.email.split('@')[0] || legacyUser.name,
-                timestamp: serverTimestamp()
-            });
-        };
-    }
 }
 
 function switchChannel(id, name) {
     activeChannelId = id;
-    const nameHeader = document.getElementById('active-channel-name');
-    const chatInput = document.getElementById('chat-input');
-    const sendBtn = document.getElementById('send-btn');
-
-    if (nameHeader) nameHeader.innerText = `# ${name}`;
-    if (chatInput) chatInput.disabled = false;
-    if (sendBtn) sendBtn.disabled = false;
-
     if (unsubscribeMessages) unsubscribeMessages();
     const msgQuery = query(collection(db, "channels", id, "messages"), orderBy("timestamp", "asc"));
-
     unsubscribeMessages = onSnapshot(msgQuery, (snapshot) => {
         const stream = document.getElementById('message-stream');
         if (!stream) return;
@@ -236,7 +263,18 @@ function switchChannel(id, name) {
     });
 }
 
-// --- 5. INITIALIZATION ---
+// --- 5. GLOBAL INITIALIZATION & MODAL HANDLERS ---
+
+window.openAuthModal = () => {
+    const modal = document.getElementById('auth-modal');
+    if (modal) modal.style.display = 'flex';
+    else window.location.href = '/home?auth=login';
+};
+
+window.closeAuthModal = () => {
+    const modal = document.getElementById('auth-modal');
+    if (modal) modal.style.display = 'none';
+};
 
 document.addEventListener('click', (e) => {
     const navItem = e.target.closest('.nav-item');
@@ -244,34 +282,37 @@ document.addEventListener('click', (e) => {
         const page = navItem.getAttribute('data-page');
         loadPage(page);
     }
+
+    if (e.target.id === 'auth-submit') {
+        const email = document.getElementById('auth-email').value;
+        const pass = document.getElementById('auth-password').value;
+        const isLogin = e.target.innerText === "Login";
+        isLogin ? handleLogin(email, pass) : handleSignUp(email, pass);
+    }
+
+    if (e.target.id === 'auth-toggle') {
+        const title = document.getElementById('auth-title');
+        const submit = document.getElementById('auth-submit');
+        const toggle = document.getElementById('auth-toggle');
+        const isCurrentlyLogin = submit.innerText === "Login";
+
+        title.innerText = isCurrentlyLogin ? "Create Account" : "Welcome Back";
+        submit.innerText = isCurrentlyLogin ? "Sign Up" : "Login";
+        toggle.innerText = isCurrentlyLogin ? "Already have an account? Login" : "Need an account? Sign Up";
+    }
 });
 
 window.onload = () => {
     initCookieConsent();
 
-    window.openAuthModal = () => {
-        const modal = document.getElementById('auth-modal');
-        if (modal) modal.style.display = 'flex';
-    };
-    window.closeAuthModal = () => {
-        const modal = document.getElementById('auth-modal');
-        if (modal) modal.style.display = 'none';
-    };
-
-    const appContainer = document.getElementById('app-content');
     const path = window.location.pathname;
+    const appContainer = document.getElementById('app-content');
 
-    const isStaticPage = path === '/' || path.endsWith('index.html') || path.endsWith('contact.html') || path.includes('/legal/');
-
-    if (appContainer && !isStaticPage) {
-        if (path.includes('pricing.html')) {
-            initPricingLogic();
-        } else {
-            loadPage('dashboard');
-        }
-    }
-
-    if (document.getElementById('s-storage')) {
+    // Conditional Initialization to prevent errors on index.html
+    if (path.includes('pricing') || document.getElementById('s-storage')) {
         initPricingLogic();
+    }
+    else if (appContainer && !path.includes('contact') && !path.includes('legal')) {
+        loadPage('dashboard');
     }
 };

@@ -75,35 +75,92 @@
         </section>
     </main>
 
-    <div id="auth-modal" class="popup-overlay" style="display: none; z-index: 10001;">
+    <div id="auth-modal" class="popup-overlay"
+        style="display: none; z-index: 10001; background: rgba(0,0,0,0.5); position: fixed; top: 0; left: 0; width: 100%; height: 100%; align-items: center; justify-content: center;">
         <div class="popup-content"
-            style="max-width: 400px; background: white; color: #333; padding: 40px; border-radius: 12px;">
+            style="max-width: 400px; width: 90%; background: white; color: #333; padding: 40px; border-radius: 12px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+
             <button class="close-btn" onclick="closeAuthModal()"
-                style="float:right; border:none; background:none; font-size:20px; cursor:pointer;">&times;</button>
-            <h2 id="auth-title" style="text-align: center;">Welcome to FlowTide</h2>
-            <div style="margin-top: 20px;">
+                style="position: absolute; right: 20px; top: 20px; border: none; background: none; font-size: 24px; cursor: pointer; color: #888;">&times;</button>
+
+            <h2 id="auth-title" style="text-align: center; margin-bottom: 25px; font-family: sans-serif;">Welcome to
+                FlowTide</h2>
+
+            <button onclick="loginWithGoogle()" class="btn-google"
+                style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; background: white; color: #3c4043; border: 1px solid #dadce0; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: 500; font-family: 'Roboto', sans-serif; transition: background 0.2s;">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" height="18"
+                    alt="Google">
+                Continue with Google
+            </button>
+
+            <div style="display: flex; align-items: center; margin: 20px 0;">
+                <div style="flex: 1; height: 1px; background: #eee;"></div>
+                <span style="margin: 0 10px; color: #999; font-size: 14px;">or</span>
+                <div style="flex: 1; height: 1px; background: #eee;"></div>
+            </div>
+
+            <div id="auth-form">
                 <input type="email" id="auth-email" placeholder="Email" class="form-input"
-                    style="width:100%; margin-bottom:10px; padding:10px; border:1px solid #ddd; border-radius:6px;">
+                    style="width: 100%; box-sizing: border-box; margin-bottom: 12px; padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none;">
+
                 <input type="password" id="auth-password" placeholder="Password" class="form-input"
-                    style="width:100%; margin-bottom:20px; padding:10px; border:1px solid #ddd; border-radius:6px;">
-                <button id="auth-submit" class="btn btn-full" style="width:100%;">Login</button>
-                <p id="auth-toggle" style="margin-top:15px; cursor:pointer; text-align:center; color: var(--accent);">
-                    Don't have an account? Sign Up</p>
+                    style="width: 100%; box-sizing: border-box; margin-bottom: 20px; padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none;">
+
+                <button id="auth-submit" class="btn btn-full"
+                    style="width: 100%; padding: 12px; background: #00d2ff; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Login</button>
+
+                <p id="auth-toggle"
+                    style="margin-top: 20px; cursor: pointer; text-align: center; color: #00d2ff; font-size: 14px; font-weight: 500;">
+                    Don't have an account? Sign Up
+                </p>
             </div>
         </div>
     </div>
-
     <script type="module">
-        import { processPayment, handleLogin, handleSignUp } from '../js/script.js';
+        import { processPayment, handleLogin, handleSignUp, auth, db } from '../js/script.js';
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // 1. Upgrade Hook: Gets current price from the span updated by sliders
+        // --- 1. SLIDER CALCULATIONS ---
+        // This replicates the logic in script.js to ensure the UI updates
+        const setupLocalSlider = (planId, margin, storageRate, apiRate) => {
+            const sSlider = document.getElementById(`${planId}-storage`);
+            const aSlider = document.getElementById(`${planId}-api`);
+            const sDisplay = document.getElementById(`${planId}-storage-val`);
+            const aDisplay = document.getElementById(`${planId}-api-val`);
+            const pDisplay = document.getElementById(`${planId}-price`);
+
+            if (!sSlider || !aSlider || !pDisplay) return;
+
+            const update = () => {
+                const sVal = parseInt(sSlider.value);
+                const aVal = parseInt(aSlider.value);
+                if (sDisplay) sDisplay.innerText = sVal;
+                if (aDisplay) aDisplay.innerText = aVal;
+
+                const total = margin + (sVal * storageRate) + (aVal * apiRate);
+                pDisplay.innerText = total.toLocaleString('en-IN');
+            };
+
+            sSlider.oninput = update;
+            aSlider.oninput = update;
+            update();
+        };
+
+        // Initialize the sliders for your three cards
+        setupLocalSlider('s', 500, 10, 50);   // Starter
+        setupLocalSlider('p', 1500, 8, 40);  // Professional
+        setupLocalSlider('e', 2500, 5, 30);  // Enterprise
+
+        // --- 2. UPGRADE HOOK ---
         window.initiateUpgrade = (plan) => {
             const prefix = plan === 'Starter' ? 's' : (plan === 'Professional' ? 'p' : 'e');
-            const amount = parseInt(document.getElementById(`${prefix}-price`).innerText.replace(/,/g, ''));
+            const priceElement = document.getElementById(`${prefix}-price`);
+            const amount = parseInt(priceElement.innerText.replace(/,/g, ''));
+
             processPayment(plan, amount);
         };
 
-        // 2. Auth Modal UI Toggle Logic
+        // --- 3. AUTH MODAL LOGIC (Already yours, kept for completeness) ---
         let isLogin = true;
         const toggle = document.getElementById('auth-toggle');
         const submit = document.getElementById('auth-submit');
@@ -121,16 +178,8 @@
             const pass = document.getElementById('auth-password').value;
             isLogin ? handleLogin(email, pass) : handleSignUp(email, pass);
         };
-        // Inside pricing.html script block
-        window.initiateUpgrade = (name) => {
-            const prefix = name === 'Starter' ? 's' : (name === 'Professional' ? 'p' : 'e');
-            const amountText = document.getElementById(`${prefix}-price`).innerText;
-            const amount = parseInt(amountText.replace(/,/g, ''));
-
-            // Calls the logic from script.js
-            processPayment(name, amount);
-        };
     </script>
+
 </body>
 
 </html>

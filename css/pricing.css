@@ -190,3 +190,40 @@ body {
     text-align: center;
     color: var(--text-secondary);
 }
+
+/* Add this to pricing.css if not there */
+.slider {
+    -webkit-appearance: none;
+    /* For Chrome/Safari */
+    appearance: none;
+    /* Standard Property - THIS FIXES THE WARNING */
+    width: 100%;
+    height: 8px;
+    border-radius: 5px;
+    background: #333;
+    outline: none;
+    cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    /* Standard Property - ALSO ADD HERE */
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent, #00d2ff);
+    cursor: pointer;
+    border: none;
+    /* Removes default borders */
+}
+
+/* For Firefox Compatibility */
+.slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent, #00d2ff);
+    cursor: pointer;
+    border: none;
+}
