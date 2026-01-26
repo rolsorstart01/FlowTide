@@ -1,0 +1,81 @@
+/* Discord-like Chat Layout */
+.forge-chat-container {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    height: 100%;
+    background: #313338;
+}
+
+.chat-inner-sidebar {
+    background: #2b2d31;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    border-right: 1px solid #1e1f22;
+}
+
+.channel-item {
+    padding: 8px 12px;
+    border-radius: 4px;
+    color: #949ba4;
+    cursor: pointer;
+    margin-bottom: 2px;
+    transition: background 0.2s;
+}
+
+.channel-item:hover,
+.channel-item.active {
+    background: #3f4147;
+    color: #ffffff;
+}
+
+.message-stream {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.message-row {
+    display: flex;
+    gap: 12px;
+    max-width: 80%;
+}
+
+.message-row.me {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.bubble {
+    background: #383a40;
+    padding: 10px 16px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.message-row.me .bubble {
+    background: #5865f2;
+    /* Discord Blurple */
+    color: white;
+}
+
+.msg-meta {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    margin-bottom: 4px;
+    font-size: 0.8rem;
+}
+
+.sender {
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.time {
+    color: #949ba4;
+    font-size: 0.7rem;
+}

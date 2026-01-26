@@ -366,14 +366,39 @@ const initNavigation = () => {
     });
 };
 
-// Simple placeholder for content switching
-const loadPageContent = (page) => {
+const loadPageContent = (pageKey) => {
     const content = document.getElementById('app-content');
-    console.log(`Switching to: ${page}`);
 
-    // Example: If page is 'chat', you'd load your chat component here
-    if (page === 'chat') {
-        content.innerHTML = '<h1>Team Chat</h1><p>Your team messages will appear here.</p>';
+    // 1. Safety check: ensure the element exists
+    if (!content) {
+        console.error("Container '#app-content' not found.");
+        return;
+    }
+
+    console.log(`Switching to: ${pageKey}`);
+
+    // 2. Load the HTML content from your 'pages' object
+    // Assuming 'pages' is defined globally or within accessible scope
+    if (pages && pages[pageKey]) {
+        content.innerHTML = pages[pageKey];
+    } else {
+        // Fallback or default content
+        content.innerHTML = '<h1>Page Not Found</h1>';
+    }
+
+    // 3. Initialize specific logic based on the page
+    switch (pageKey) {
+        case 'chat':
+            initDiscordChat();
+            break;
+        case 'ai':
+            initAIRecommender();
+            break;
+        case 'pricing':
+            initPricingLogic();
+            break;
+        default:
+            console.log("No specific initialization needed for this page.");
     }
 };
 
