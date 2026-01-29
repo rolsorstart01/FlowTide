@@ -170,62 +170,13 @@
         </div>
     </footer>
 
-    <script type="module">
-        import { db } from "./js/script.js";
-        import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const openBtn = document.getElementById('open-waitlist');
-            const closeBtn = document.getElementById('close-popup');
-            const overlay = document.getElementById('popup-overlay');
-            const waitlistForm = document.getElementById('waitlist-form');
-
-            // OPEN POPUP
-            if (openBtn) {
-                openBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    overlay.style.display = 'flex';
-                    document.body.style.overflow = 'hidden';
-                });
-            }
-
-            // CLOSE POPUP
-            const closePopup = () => {
-                overlay.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            };
-
-            if (closeBtn) closeBtn.addEventListener('click', closePopup);
-            overlay.addEventListener('click', (e) => { if (e.target === overlay) closePopup(); });
-
-            // HANDLE FIREBASE
-            if (waitlistForm) {
-                waitlistForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    const email = document.getElementById('email-input').value;
-                    const submitBtn = document.getElementById('submit-btn');
-
-                    submitBtn.innerText = "Joining...";
-                    submitBtn.disabled = true;
-
-                    try {
-                        await addDoc(collection(db, "waitlist"), {
-                            email: email,
-                            timestamp: serverTimestamp()
-                        });
-                        document.getElementById('form-container').style.display = 'none';
-                        document.getElementById('success-message').style.display = 'block';
-                    } catch (error) {
-                        console.error("Error:", error);
-                        alert("Something went wrong. Please try again.");
-                        submitBtn.innerText = "Notify Me";
-                        submitBtn.disabled = false;
-                    }
-                });
-            }
-        });
-    </script>
+<script type="module">
+    import { initWaitlist } from "./js/waitlist-handler.js";
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        initWaitlist();
+    });
+</script>
 </body>
 
 </html>
