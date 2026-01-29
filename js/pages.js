@@ -73,37 +73,40 @@ export const pages = {
             </section>
         </div>
     `,
-
     chat: `
-    <div class="forge-chat-container">
-        <aside class="chat-inner-sidebar">
-            <div class="sidebar-header">
-                <span>MY TEAM</span>
-                <button id="add-channel-btn" class="plus-btn"><i class="ph ph-plus-circle"></i></button>
+   <div class="forge-chat-container" style="display: flex; height: calc(100vh - 70px);">
+        <aside class="chat-inner-sidebar" style="width: 260px; border-right: 1px solid #222; padding: 20px;">
+            <div class="sidebar-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <span style="font-weight: bold; letter-spacing: 1px;">MY TEAM</span>
+                <button id="add-channel-btn" class="plus-btn" style="background: none; border: none; color: #555; cursor: pointer;">
+                    <i class="ph ph-plus-circle" style="font-size: 1.2rem;"></i>
+                </button>
             </div>
             <div id="channel-list" class="channel-list-items"></div>
         </aside>
 
-        <section class="chat-main">
-            <div class="chat-top-bar">
-                <h2 id="active-channel-name">Select Team Chat</h2>
+        <section class="chat-main" style="flex-grow: 1; display: flex; flex-direction: column;">
+            <div class="chat-top-bar" style="padding: 15px 25px; border-bottom: 1px solid #222;">
+                <h2 id="active-channel-name" style="font-size: 1.1rem;">Select Team Chat</h2>
             </div>
-            <div id="message-stream" class="message-stream"></div>
-            <form id="chat-form" class="chat-input-area">
-                <div class="input-wrapper">
-                    <input type="text" id="chat-input" placeholder="Type a message..." disabled>
-                    <button type="submit" id="send-btn" disabled><i class="ph ph-paper-plane-right-fill"></i></button>
+            <div id="message-stream" class="message-stream" style="flex-grow: 1; overflow-y: auto; padding: 20px;"></div>
+            <form id="chat-form" class="chat-input-area" style="padding: 20px; background: #0a0a0a;">
+                <div class="input-wrapper" style="display: flex; background: #181818; border-radius: 8px; padding: 5px 15px;">
+                    <input type="text" id="chat-input" placeholder="Type a message..." style="flex-grow: 1; background: none; border: none; color: white; padding: 10px;" disabled>
+                    <button type="submit" id="send-btn" style="background: none; border: none; color: #00d2ff;" disabled>
+                        <i class="ph ph-paper-plane-right-fill"></i>
+                    </button>
                 </div>
             </form>
         </section>
 
-        <div id="channel-modal" class="modal-overlay" style="display:none;">
-            <div class="modal-card">
-                <h3>Create New Team Channel</h3>
-                <input type="text" id="new-channel-input" placeholder="e.g. Marketing-Team">
-                <div class="modal-btns">
-                    <button id="close-modal" class="btn-secondary">Cancel</button>
-                    <button id="confirm-channel" class="btn-primary">Create Channel</button>
+        <div id="channel-modal" class="modal-overlay" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
+            <div class="modal-card" style="background:#181818; padding:30px; border-radius:12px; width:350px; border:1px solid #333;">
+                <h3 style="margin-bottom:20px; color:white;">New Channel</h3>
+                <input type="text" id="new-channel-input" placeholder="channel-name" style="width:100%; background:#0a0a0a; border:1px solid #333; color:white; padding:10px; border-radius:6px; margin-bottom:20px;">
+                <div style="display:flex; justify-content:flex-end; gap:10px;">
+                    <button id="close-modal" style="background:none; border:none; color:#888; cursor:pointer;">Cancel</button>
+                    <button id="confirm-channel" style="background:#00d2ff; color:black; border:none; padding:8px 16px; border-radius:6px; font-weight:bold; cursor:pointer;">Create</button>
                 </div>
             </div>
         </div>

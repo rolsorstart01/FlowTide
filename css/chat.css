@@ -79,3 +79,176 @@
     color: #949ba4;
     font-size: 0.7rem;
 }
+
+/* --- Modal Overlay (The Dark Background) --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    /* Darken the background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    /* Ensure it's on top of everything */
+    backdrop-filter: blur(4px);
+    /* Modern blur effect */
+}
+
+/* --- Modal Card (The White Popup) --- */
+.modal-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    color: #1a1a1a;
+}
+
+.modal-card h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.modal-card input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.modal-btns {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+/* Button Styles */
+#close-modal {
+    background: #f3f4f6;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+#confirm-channel {
+    background: #5865F2;
+    /* Discord-style blue */
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+#confirm-channel:hover {
+    background: #4752c4;
+}
+
+#app-content {
+    min-height: 100vh;
+    width: 100%;
+    display: block;
+    /* Ensure it's not hidden by a flex-0 setting */
+}
+
+.page-animate {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Team Chat UI --- */
+.channel-item {
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    color: var(--text-secondary, #aaa);
+    transition: background 0.2s, color 0.2s;
+}
+
+.channel-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+.channel-item.active {
+    background: var(--brand-color, #00d2ff);
+    color: #000;
+    font-weight: 600;
+}
+
+/* Message Bubbles */
+.msg-container {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.msg-container.me {
+    align-items: flex-end;
+}
+
+.msg-container.them {
+    align-items: flex-start;
+}
+
+.msg-bubble {
+    padding: 10px 15px;
+    border-radius: 12px;
+    max-width: 70%;
+    position: relative;
+}
+
+.msg-container.me .msg-bubble {
+    background: #ffffff;
+    color: #000;
+    border-bottom-right-radius: 2px;
+}
+
+.msg-container.them .msg-bubble {
+    background: #181818;
+    color: #fff;
+    border-bottom-left-radius: 2px;
+}
+
+.msg-sender {
+    display: block;
+    font-size: 0.7rem;
+    opacity: 0.7;
+    margin-bottom: 4px;
+}
+
+.msg-text {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.msg-time {
+    font-size: 0.65rem;
+    color: var(--text-secondary, #666);
+    margin-top: 4px;
+}
