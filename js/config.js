@@ -17,7 +17,7 @@ export const firebaseConfig = {
 };
 
 // Razorpay Key
-export const RZP_KEY_ID = "REPLACE_WITH_RZP_KEY";
+export const RZP_KEY_ID = "rzp_live_S61J7p7YKjOlxz";
 
 // User Session Default
 export const currentUser = {
