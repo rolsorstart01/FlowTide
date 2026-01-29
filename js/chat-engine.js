@@ -1,4 +1,3 @@
-// ../js/chat-engine.js
 import {
     collection, addDoc, serverTimestamp, query,
     orderBy, onSnapshot, where
@@ -14,9 +13,9 @@ export function initDiscordChat() {
     const chatForm = document.getElementById('chat-form');
     const chatInput = document.getElementById('chat-input');
 
-    if (!list || !chatForm) return;
+    if (!list) return;
 
-    // 1. Sync Channels
+    // 1. Load Channels Real-time
     const q = query(
         collection(db, "channels"),
         where("companyId", "==", legacyUser.companyId),
@@ -35,70 +34,28 @@ export function initDiscordChat() {
         });
     });
 
-    // 2. Handle Message Sending
-    chatForm.onsubmit = async (e) => {
-        e.preventDefault();
-        const text = chatInput.value.trim();
-        if (!text || !activeChannelId) return;
+    // 2. Message Submission
+    if (chatForm) {
+        chatForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const text = chatInput.value.trim();
+            if (!text || !activeChannelId) return;
 
-        try {
-            await addDoc(collection(db, "channels", activeChannelId, "messages"), {
-                text: text,
-                senderId: auth.currentUser?.uid || legacyUser.id,
-                senderName: auth.currentUser?.displayName || legacyUser.name,
-                timestamp: serverTimestamp()
-            });
-            chatInput.value = "";
-        } catch (err) {
-            console.error("Chat Error:", err);
-        }
-    };
-
-    // 3. CRITICAL FIX: Re-run Modal Setup
-    setupChannelModal();
-}
-
-function setupChannelModal() {
-    const modal = document.getElementById('channel-modal');
-    const openBtn = document.getElementById('add-channel-btn');
-    const closeBtn = document.getElementById('close-modal');
-    const confirmBtn = document.getElementById('confirm-channel');
-    const input = document.getElementById('new-channel-input');
-
-    if (!modal || !confirmBtn) {
-        console.error("Modal elements not found in DOM");
-        return;
+            try {
+                await addDoc(collection(db, "channels", activeChannelId, "messages"), {
+                    text: text,
+                    senderId: auth.currentUser?.uid || legacyUser.id,
+                    senderName: auth.currentUser?.displayName || legacyUser.name,
+                    timestamp: serverTimestamp()
+                });
+                chatInput.value = "";
+            } catch (err) {
+                console.error("Firestore Error:", err);
+            }
+        };
     }
 
-    // Toggle Modal Visibility
-    if (openBtn) openBtn.onclick = () => { modal.style.display = 'flex'; input.focus(); };
-    if (closeBtn) closeBtn.onclick = () => modal.style.display = 'none';
-
-    // Create Channel Action
-    confirmBtn.onclick = async () => {
-        const channelName = input.value.trim();
-        if (!channelName) return;
-
-        confirmBtn.disabled = true; // Prevent double-clicks
-        confirmBtn.innerText = "Creating...";
-
-        try {
-            await addDoc(collection(db, "channels"), {
-                name: channelName,
-                companyId: legacyUser.companyId,
-                createdAt: serverTimestamp()
-            });
-
-            modal.style.display = 'none';
-            input.value = "";
-        } catch (err) {
-            console.error("Error creating channel:", err);
-            alert("Failed to create channel.");
-        } finally {
-            confirmBtn.disabled = false;
-            confirmBtn.innerText = "Create Channel";
-        }
-    };
+    setupChannelModal();
 }
 
 function switchChannel(id, name) {
@@ -108,12 +65,19 @@ function switchChannel(id, name) {
     const input = document.getElementById('chat-input');
     const btn = document.getElementById('send-btn');
 
+    // UI Updates
     if (header) header.innerText = `# ${name}`;
-    if (input) { input.disabled = false; input.placeholder = `Message #${name}`; }
+    if (input) {
+        input.disabled = false;
+        input.placeholder = `Message #${name}`;
+        input.focus();
+    }
     if (btn) btn.disabled = false;
 
+    // Cleanup previous listener
     if (unsubscribeMessages) unsubscribeMessages();
 
+    // Start listening to the specific channel's messages
     const msgQuery = query(
         collection(db, "channels", id, "messages"),
         orderBy("timestamp", "asc")
@@ -126,20 +90,48 @@ function switchChannel(id, name) {
         snapshot.forEach(docSnap => {
             const msg = docSnap.data();
             const isMe = msg.senderId === (auth.currentUser?.uid || legacyUser.id);
-            const time = msg.timestamp?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || "just now";
+            const timeStr = msg.timestamp?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || "";
 
             const html = `
                 <div class="message-row ${isMe ? 'me' : 'them'}">
                     <div class="bubble">
                         <div class="msg-meta">
                             <span class="sender">${msg.senderName}</span>
-                            <span class="time">${time}</span>
+                            <span class="time">${timeStr}</span>
                         </div>
                         <p>${msg.text}</p>
                     </div>
                 </div>`;
             stream.insertAdjacentHTML('beforeend', html);
         });
+        // Auto-scroll to bottom
         stream.scrollTop = stream.scrollHeight;
     });
+}
+
+function setupChannelModal() {
+    const modal = document.getElementById('channel-modal');
+    const openBtn = document.getElementById('add-channel-btn');
+    const closeBtn = document.getElementById('close-modal');
+    const confirmBtn = document.getElementById('confirm-channel');
+
+    if (openBtn) openBtn.onclick = () => modal.style.display = 'flex';
+    if (closeBtn) closeBtn.onclick = () => modal.style.display = 'none';
+
+    if (confirmBtn) {
+        confirmBtn.onclick = async () => {
+            const input = document.getElementById('new-channel-input');
+            const name = input.value.trim().toLowerCase().replace(/\s+/g, '-');
+
+            if (name) {
+                await addDoc(collection(db, "channels"), {
+                    name: name,
+                    companyId: legacyUser.companyId,
+                    createdAt: serverTimestamp()
+                });
+                modal.style.display = 'none';
+                input.value = "";
+            }
+        };
+    }
 }
