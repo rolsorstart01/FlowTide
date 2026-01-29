@@ -1,9 +1,13 @@
 // ../js/config.js
+
+/**
+ * FIREBASE CONFIGURATION
+ * In production, these should be managed via Environment Variables.
+ * If using Vercel, ensure these are added to the Project Settings.
+ */
 export const firebaseConfig = {
-  // If we are on localhost, use the real key. If not, Vercel handles it via environment variables.
-  apiKey: window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost"
-    ? "AIzaSyA72C67ZUUcQYdXlzmojvglxkuV8PxUcag"
-    : "REPLACE_WITH_FIREBASE_KEY",
+  // This will be replaced by your CI/CD pipeline or stay as the env variable
+  apiKey: "REPLACE_WITH_FIREBASE_KEY",
   authDomain: "forgecodefirebase.firebaseapp.com",
   projectId: "forgecodefirebase",
   storageBucket: "forgecodefirebase.firebasestorage.app",
@@ -12,8 +16,10 @@ export const firebaseConfig = {
   measurementId: "G-JBKJ2YFLHQ"
 };
 
-export const RZP_KEY_ID = "rzp_live_S61J7p7YKjOlxz";
+// Razorpay Key
+export const RZP_KEY_ID = "REPLACE_WITH_RZP_KEY";
 
+// User Session Default
 export const currentUser = {
   id: "user_001",
   name: "Founder",
