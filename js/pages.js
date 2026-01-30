@@ -106,7 +106,7 @@ export const pages = {
                 <input type="text" id="new-channel-input" placeholder="channel-name" style="width:100%; background:#0a0a0a; border:1px solid #333; color:white; padding:10px; border-radius:6px; margin-bottom:20px;">
                 <div style="display:flex; justify-content:flex-end; gap:10px;">
                     <button id="close-modal" style="background:none; border:none; color:#888; cursor:pointer;">Cancel</button>
-                    <button id="confirm-channel" style="background:#00d2ff; color:black; border:none; padding:8px 16px; border-radius:6px; font-weight:bold; cursor:pointer;">Create</button>
+                    <button id="confirm-channel" style="background:#000; color:white; border:none; padding:8px 16px; border-radius:6px; font-weight:bold; cursor:pointer;">Create</button>
                 </div>
             </div>
         </div>
