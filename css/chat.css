@@ -164,7 +164,7 @@
 }
 
 #confirm-channel {
-    background: #5865F2;
+    background: #000;
     /* Discord-style blue */
     color: white;
     border: none;
@@ -175,7 +175,7 @@
 }
 
 #confirm-channel:hover {
-    background: #4752c4;
+    background: #282828;
 }
 
 #app-content {
