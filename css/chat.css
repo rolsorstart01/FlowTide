@@ -14,19 +14,40 @@
     border-right: 1px solid #1e1f22;
 }
 
+/* --- Consolidated Channel Item Styles --- */
 .channel-item {
-    padding: 8px 12px;
-    border-radius: 4px;
-    color: #949ba4;
+    padding: 10px 12px;
     cursor: pointer;
-    margin-bottom: 2px;
-    transition: background 0.2s;
+    border-radius: 5px;
+    margin-bottom: 4px;
+    /* Default state: subtle grey */
+    color: #949ba4;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
 }
 
-.channel-item:hover,
+/* Hover state: lighter grey background, white text */
+.channel-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #dbdee1;
+}
+
+/* Active state: High contrast to show what is selected */
 .channel-item.active {
-    background: #3f4147;
-    color: #ffffff;
+    background: #404249 !important;
+    /* Discord-style selected dark grey */
+    color: #ffffff !important;
+    /* Pure white text */
+}
+
+/* Optional: Add a '#' prefix like Discord to the channel name */
+.channel-item::before {
+    content: "#";
+    margin-right: 8px;
+    font-weight: 400;
+    color: #5f636a;
 }
 
 .message-stream {
@@ -178,27 +199,6 @@
         opacity: 1;
         transform: translateY(0);
     }
-}
-
-/* --- Team Chat UI --- */
-.channel-item {
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-bottom: 5px;
-    color: var(--text-secondary, #aaa);
-    transition: background 0.2s, color 0.2s;
-}
-
-.channel-item:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: #fff;
-}
-
-.channel-item.active {
-    background: var(--brand-color, #00d2ff);
-    color: #000;
-    font-weight: 600;
 }
 
 /* Message Bubbles */
