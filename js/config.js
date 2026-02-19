@@ -7,7 +7,7 @@
  */
 export const firebaseConfig = {
   // This will be replaced by your CI/CD pipeline or stay as the env variable
-  apiKey: "REPLACE_WITH_FIREBASE_KEY",
+  apiKey: "",
   authDomain: "forgecodefirebase.firebaseapp.com",
   projectId: "forgecodefirebase",
   storageBucket: "forgecodefirebase.firebasestorage.app",
