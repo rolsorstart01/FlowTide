@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
         const { amount, planName } = req.body;
 
         // Vercel build will replace this placeholder with your actual secret
-        const SECRET = "";
+        const SECRET = "REPLACE_WITH_RZP_SECRET";
 
         const instance = new Razorpay({
             key_id: 'rzp_live_S61J7p7YKjOlxz',
