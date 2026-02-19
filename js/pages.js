@@ -110,39 +110,5 @@ export const pages = {
                 </div>
             </div>
         </div>
-    </div>`,
-    // Add this inside the pages object in ../js/pages.js
-team: `
-    <div class="page-animate">
-        <section class="container" style="padding: 40px 24px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                <div>
-                    <h1 style="font-size: 2rem; font-weight: 700;">Team Management</h1>
-                    <p style="color: var(--text-secondary);">Manage seats and shared resources.</p>
-                </div>
-                <div id="team-stats" style="display: flex; gap: 20px;">
-                    </div>
-            </div>
-
-            <div class="pricing-grid" style="grid-template-columns: 1fr 2fr; gap: 30px;">
-                <div class="pricing-card" style="text-align: left; height: fit-content;">
-                    <h3>Invite Member</h3>
-                    <p style="font-size: 0.85rem; margin-bottom: 20px;">Seats remaining: <span id="seats-left">0</span></p>
-                    <form id="invite-form">
-                        <input type="email" id="invite-email" placeholder="colleague@company.com" 
-                               style="width: 100%; background: #0a0a0a; border: 1px solid #333; color: white; padding: 12px; border-radius: 8px; margin-bottom: 15px;" required>
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">Send Invitation</button>
-                    </form>
-                </div>
-
-                <div class="pricing-card" style="text-align: left;">
-                    <h3>Team Members</h3>
-                    <div id="team-list" style="margin-top: 20px;">
-                        <p style="color: #666;">Loading team data...</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
-`,
+    </div>`
 };

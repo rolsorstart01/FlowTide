@@ -16,7 +16,6 @@ import { pages } from "./pages.js";
 import { initAIRecommender } from "./ai-handler.js";
 import { initCookieConsent } from "./cookie-handler.js";
 import { initDiscordChat } from "./chat-engine.js";
-import { initTeamManagement } from "./team-handler.js";
 
 // --- 1. INITIALIZATION ---
 const app = initializeApp(firebaseConfig);
@@ -29,42 +28,17 @@ setPersistence(auth, browserLocalPersistence)
     .catch((error) => console.error(`Auth Error: ${error.message}`));
 
 // --- 2. AUTHENTICATION HANDLERS ---
-// Inside ../js/script.js
 
-async function handleSignUp(email, password) {
-    // 1. Check the URL for a team/company ID from an invitation link
-    const urlParams = new URLSearchParams(window.location.search);
-    const inviteCompanyId = urlParams.get('companyId');
-
+export async function handleSignUp(email, password) {
     try {
         const res = await createUserWithEmailAndPassword(auth, email, password);
-
-        // 2. Define the company logic: 
-        // If they have an invite, use that ID. 
-        // If not, they are a 'Founder', so their own UID becomes the companyId.
-        const myCompanyId = inviteCompanyId || res.user.uid;
-
         await setDoc(doc(db, "users", res.user.uid), {
             email: email,
-            companyId: myCompanyId,
-            role: inviteCompanyId ? "member" : "admin",
+            plan: 'free',
             createdAt: serverTimestamp()
         });
-
-        // 3. If they are a new Founder (no invite), create the Company document
-        if (!inviteCompanyId) {
-            await setDoc(doc(db, "companies", res.user.uid), {
-                ownerId: res.user.uid,
-                tokens: 5000, // Initial shared tokens
-                storageUsed: 0,
-                plan: "free"
-            });
-        }
-
-        window.location.href = '/main';
-    } catch (err) {
-        alert(err.message);
-    }
+        window.location.reload();
+    } catch (err) { alert(err.message); }
 }
 
 export async function handleGoogleLogin() {
@@ -114,7 +88,6 @@ function loadPageContent(pageKey) {
     // Re-initialize specific scripts for the new HTML content
     if (pageKey === 'chat') initDiscordChat();
     if (pageKey === 'ai') initAIRecommender();
-    if (pageKey === 'team') initTeamManagement();
     if (pageKey === 'pricing') initPricingLogic();
 }
 
