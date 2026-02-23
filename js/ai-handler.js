@@ -1,4 +1,6 @@
 //  ../js/ai-handler.js
+import { collection, addDoc, updateDoc, arrayUnion, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { db, auth } from "./script.js";
 export function initAIRecommender() {
     const input = document.getElementById('ai-user-input');
     const sendBtn = document.getElementById('ai-send-btn');
@@ -65,4 +67,44 @@ export function initAIRecommender() {
             handleAISend();
         }
     };
+};
+// Example function to include in your AI logic
+async function getFilesForAI() {
+    const user = auth.currentUser;
+    const q = query(
+        collection(db, "files"), 
+        where("owner", "==", user.uid), 
+        where("sharedWithAI", "==", true)
+    );
+    
+    const snap = await getDocs(q);
+    // This returns a list of URLs and names that you can pass to Gemini 
+    // as context for "Sales Reports" or "Optimization"
+    return snap.docs.map(doc => ({ name: doc.data().name, url: doc.data().url }));
+};
+export async function createSharedChat(chatName) {
+    const user = auth.currentUser;
+    const chatRef = await addDoc(collection(db, "ai_chats"), {
+        name: chatName,
+        participants: [user.uid], // The creator is the first participant
+        attachedFiles: [], // Files specific to this chat
+        createdAt: serverTimestamp()
+    });
+    return chatRef.id;
 }
+
+// Call this when the user adds a team member via email/uid
+export async function addParticipantToChat(chatId, newUserId) {
+    const chatRef = doc(db, "ai_chats", chatId);
+    await updateDoc(chatRef, {
+        participants: arrayUnion(newUserId) // Adds user without duplicating
+    });
+}
+
+// Call this when selecting a file from the user's storage to share with THIS chat
+export async function attachFileToChat(chatId, fileUrl, mimeType) {
+    const chatRef = doc(db, "ai_chats", chatId);
+    await updateDoc(chatRef, {
+        attachedFiles: arrayUnion({ url: fileUrl, mimeType: mimeType })
+    });
+};

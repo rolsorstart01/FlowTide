@@ -88,6 +88,7 @@ function loadPageContent(pageKey) {
     // Re-initialize specific scripts for the new HTML content
     if (pageKey === 'chat') initDiscordChat();
     if (pageKey === 'ai') initAIRecommender();
+    if (pageKey === 'files') initFileListing();
     if (pageKey === 'pricing') initPricingLogic();
 }
 

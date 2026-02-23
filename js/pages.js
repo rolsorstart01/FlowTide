@@ -48,27 +48,28 @@ export const pages = {
             </section>
         </div>
     `,
-
     ai: `
-        <div class="page-animate">
-            <section class="container" style="padding: 40px 24px; height: calc(100vh - 80px); display: flex; flex-direction: column;">
-                <div class="ai-header">
-                    <h1>FlowTide Intelligence</h1>
-                    <p style="color: var(--text-secondary);">Powered by Gemini 2.5 Flash-Lite</p>
+        <div class="page-animate ai-workspace" style="display: flex; height: calc(100vh - 70px);">
+            <aside style="width: 250px; border-right: 1px solid #222; padding: 20px; background: #0a0a0a;">
+                <h4 style="font-size: 0.7rem; color: #555; letter-spacing: 1px; margin-bottom: 15px;">CONVERSATIONS</h4>
+                <div id="ai-chat-list"></div>
+            </aside>
+
+            <section style="flex-grow: 1; display: flex; flex-direction: column;">
+                <div id="ai-chat-window" style="flex-grow: 1; overflow-y: auto; padding: 30px;">
+                    <div class="ai-message system"><div class="bubble">Select or create a chat to begin analysis.</div></div>
                 </div>
 
-                <div id="ai-chat-window" class="ai-chat-window">
-                    <div class="ai-message system">
-                        <div class="ai-avatar"><i class="ph ph-sparkle"></i></div>
-                        <div class="bubble">
-                            <p>Hello Founder. I am your Business Architect. I can help you with your business, suggest pricing strategies, draft client emails, and more. What are we optimizing today?</p>
-                        </div>
-                    </div>
-                    </div>
+                <div id="attachment-preview" style="padding: 0 20px; display: flex; gap: 10px;"></div>
 
-                <div class="ai-input-area">
-                    <input type="text" id="ai-user-input" placeholder="Ask about strategy, hiring, or optimization..." />
-                    <button id="ai-send-btn" class="btn-primary"><i class="ph ph-paper-plane-right"></i></button>
+                <div class="ai-input-area" style="padding: 20px; border-top: 1px solid #222;">
+                    <div style="display: flex; background: #181818; border-radius: 12px; padding: 10px;">
+                        <button onclick="window.openFileSelector()" style="background:none; border:none; color:#555; padding:0 15px; cursor:pointer;">
+                            <i class="ph ph-paperclip" style="font-size: 1.2rem;"></i>
+                        </button>
+                        <input type="text" id="ai-user-input" placeholder="Ask AI to analyze reports..." style="flex-grow:1; background:none; border:none; color:white; outline:none;" />
+                        <button id="ai-send-btn" class="btn-primary" style="border-radius: 8px; padding: 8px 15px;">Send</button>
+                    </div>
                 </div>
             </section>
         </div>

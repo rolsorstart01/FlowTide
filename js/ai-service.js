@@ -1,99 +1,95 @@
-// ../js/ai-service.js
 import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+import { doc, getDoc, updateDoc, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { db, auth } from "./script.js";
 
-// ⚠️ SECURITY WARNING: In a real production app (2026 standards), 
-// you should call this via a Firebase Cloud Function to hide your API Key.
-// For this prototype, client-side is fine.
-const API_KEY = "YOUR_API_KEY"; // 👈 PASTE YOUR KEY HERE
+const API_KEY = "YOUR_API_KEY"; 
 const genAI = new GoogleGenerativeAI(API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
-// Initialize Gemini 2.5 Flash-Lite
-const model = genAI.getGenerativeModel({
-    model: "gemini-2.5-flash-lite", // The 2026 low-cost speed model
-    systemInstruction: "You are FlowTide AI, a ruthless but helpful Business Architect for a startup founder. You prioritize speed, automation, and leverage. Keep answers concise, actionable, and formatted with bullet points. Never explain what you are doing, just give the solution."
-});
-
-export async function initAI() {
-    const input = document.getElementById('ai-user-input');
-    const sendBtn = document.getElementById('ai-send-btn');
-    const chatWindow = document.getElementById('ai-chat-window');
-
-    if (!input || !sendBtn) return;
-
-    const sendMessage = async () => {
-        const text = input.value.trim();
-        if (!text) return;
-
-        // 1. Add User Message to UI
-        appendMessage('user', text);
-        input.value = '';
-        input.disabled = true;
-
-        // 2. Add Loading Indicator
-        const loadingId = appendLoading();
-
-        try {
-            // 3. Call Gemini
-            const result = await model.generateContent(text);
-            const response = result.response.text();
-
-            // 4. Remove Loader and Add AI Response
-            removeMessage(loadingId);
-            appendMessage('ai', response);
-        } catch (error) {
-            console.error(error);
-            removeMessage(loadingId);
-            appendMessage('system', "Connection optimization failed. Please check your API limits.");
-        } finally {
-            input.disabled = false;
-            input.focus();
-        }
-    };
-
-    sendBtn.onclick = sendMessage;
-    input.onkeypress = (e) => {
-        if (e.key === 'Enter') sendMessage();
+/**
+ * Helper: Fetches a file from a URL and converts it to Gemini's inlineData format.
+ */
+async function urlToGenerativePart(fileUrl, mimeType) {
+    const response = await fetch(fileUrl);
+    const blob = await response.blob();
+    const base64EncodedDataPromise = new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result.split(',')[1]);
+        reader.readAsDataURL(blob);
+    });
+    return {
+        inlineData: { data: await base64EncodedDataPromise, mimeType }
     };
 }
 
-function appendMessage(type, text) {
-    const chatWindow = document.getElementById('ai-chat-window');
-    const div = document.createElement('div');
-    div.className = `ai-message ${type}`;
+/**
+ * Validates the user's API limits against their pricing plan.
+ */
+async function checkApiLimits(estimatedTokens) {
+    const user = auth.currentUser;
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+    
+    if (!userSnap.exists()) return false;
+    
+    const userData = userSnap.data();
+    const limit = userData.planLimit || 50000; // E.g., from pricing-handler.js
+    const used = userData.tokensUsed || 0;
 
-    // Formatting Markdown-style bolding for better reading
-    const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
-
-    div.innerHTML = `
-        ${type === 'ai' ? '<div class="ai-avatar"><i class="ph ph-sparkle"></i></div>' : ''}
-        <div class="bubble">
-            <p>${formattedText}</p>
-        </div>
-    `;
-    chatWindow.appendChild(div);
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-    return div.id = 'msg-' + Date.now();
+    if (used + estimatedTokens > limit) {
+        alert("API Limit Reached! Please upgrade your plan.");
+        return false;
+    }
+    return true;
 }
 
-function appendLoading() {
-    const chatWindow = document.getElementById('ai-chat-window');
-    const div = document.createElement('div');
-    div.id = 'ai-loading';
-    div.className = 'ai-message ai';
-    div.innerHTML = `
-        <div class="ai-avatar"><i class="ph ph-sparkle"></i></div>
-        <div class="bubble processing">
-            <div class="typing-dot"></div>
-            <div class="typing-dot"></div>
-            <div class="typing-dot"></div>
-        </div>
-    `;
-    chatWindow.appendChild(div);
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-    return div.id;
-}
+/**
+ * Core AI Generation Engine
+ */
+export async function generateAIResponse(chatId, promptText, attachedFiles = []) {
+    const user = auth.currentUser;
+    
+    // 1. Fetch Chat History from Firestore
+    const messagesRef = collection(db, "ai_chats", chatId, "messages");
+    const q = query(messagesRef, orderBy("timestamp", "asc"));
+    const historySnap = await getDocs(q);
+    
+    // Format history for Gemini API
+    const history = historySnap.docs.map(doc => ({
+        role: doc.data().role,
+        parts: [{ text: doc.data().text }]
+    }));
 
-function removeMessage(id) {
-    const el = document.getElementById(id);
-    if (el) el.remove();
+    // 2. Prepare the new message payload with specific files
+    const newParts = [{ text: promptText }];
+    for (let file of attachedFiles) {
+        const filePart = await urlToGenerativePart(file.url, file.mimeType);
+        newParts.push(filePart);
+    }
+
+    // 3. Track Tokens BEFORE sending
+    const tokenCountReq = await model.countTokens({
+        contents: [...history, { role: "user", parts: newParts }]
+    });
+    const estimatedTokens = tokenCountReq.totalTokens;
+
+    const canProceed = await checkApiLimits(estimatedTokens);
+    if (!canProceed) throw new Error("Limit Exceeded");
+
+    // 4. Start Gemini Chat Session
+    const chat = model.startChat({ history });
+    const result = await chat.sendMessage(newParts);
+    const responseText = result.response.text();
+
+    // 5. Update Token Usage in Firestore
+    const actualTokensUsed = result.response.usageMetadata.totalTokenCount;
+    await updateDoc(doc(db, "users", user.uid), {
+        tokensUsed: (actualTokensUsed || estimatedTokens) + (userSnap.data()?.tokensUsed || 0)
+    });
+
+    // 6. Save new messages to Firestore History
+    await addDoc(messagesRef, { role: "user", text: promptText, timestamp: new Date() });
+    await addDoc(messagesRef, { role: "model", text: responseText, timestamp: new Date() });
+
+    return responseText;
 }
